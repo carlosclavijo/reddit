@@ -1,0 +1,6 @@
+create_table("videos") {
+  t.Column("video_id", "uuid", {"primary": true})
+  t.Column("post_id", "uuid", {})
+  t.Column("title", "string", {"size": 50})
+  t.Column("url", "string", {"size": 200})
+}

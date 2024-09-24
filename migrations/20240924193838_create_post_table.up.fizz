@@ -1,0 +1,11 @@
+create_table("posts") {
+  t.Column("post_id", "uuid", {"primary": true})
+  t.Column("subreddit_id", "uuid", {})
+  t.Column("user_id", "uuid", {})
+  t.Column("description", "text", {})
+  t.Column("type", "string", {"size": 20, "default": "text"})
+  t.Column("nsfw", "bool", {"default": false})
+  t.Column("brand", "bool", {"default": false})
+  t.Column("votes", "integer", {"default": 0})
+  t.Column("comments", "integer", {"default": 0})
+}

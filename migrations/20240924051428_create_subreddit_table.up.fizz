@@ -2,7 +2,7 @@ create_table("subreddits") {
   t.Column("subreddit_id", "uuid", {"primary": true})
   t.Column("name", "string", {"size": 30})
   t.Column("description", "text", {})
-  t.Column("created_by", "integer", {})
+  t.Column("created_by", "uuid", {})
   t.Column("icon", "string", {"size": 200, "null": true})
   t.Column("banner", "string", {"size": 200, "null": true})
   t.Column("privacy", "string", {"size": 11, "default": "public"})

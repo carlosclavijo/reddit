@@ -1,0 +1,5 @@
+drop_index("subreddits", "subreddits_name_idx")
+
+sql("alter table subreddits drop constraint privacy_check")
+
+drop_foreign_key("subreddits", "subreddits_users_user_id_fk", {})

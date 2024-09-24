@@ -1,0 +1,13 @@
+sql("alter table only subreddits_topics alter column subreddit_topic_id set default gen_random_uuid()")
+
+add_index("subreddits_topics", ["subreddit_id", "topic_id"],  {"unique": true})
+
+add_foreign_key("subreddits_topics", "subreddit_id", {"subreddits": ["subreddit_id"]}, {
+    "on_delete": "cascade",
+    "on_update": "cascade",
+})
+
+add_foreign_key("subreddits_topics", "topic_id", {"topics": ["topic_id"]}, {
+    "on_delete": "cascade",
+    "on_update": "cascade",
+})

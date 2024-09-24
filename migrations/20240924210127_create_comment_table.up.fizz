@@ -1,0 +1,7 @@
+create_table("comments") {
+  t.Column("comment_id", "uuid", {"primary": true})
+  t.Column("post_id", "uuid", {})
+  t.Column("user_id", "uuid", {})
+  t.Column("response_id", "uuid", {"null": true})
+  t.Column("comment", "text", {})
+}

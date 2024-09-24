@@ -1,0 +1,5 @@
+create_table("option_users") {
+  t.Column("option_users_id", "uuid", {"primary": true})
+  t.Column("option_id", "uuid", {})
+  t.Column("user_id", "uuid", {})
+}

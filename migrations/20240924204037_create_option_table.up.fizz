@@ -1,0 +1,6 @@
+create_table("options") {
+  t.Column("option_id", "uuid", {"primary": true})
+  t.Column("poll_id", "uuid", {})
+  t.Column("value", "string", {"size": 50})
+  t.Column("votes", "integer", {"default": 0})
+}

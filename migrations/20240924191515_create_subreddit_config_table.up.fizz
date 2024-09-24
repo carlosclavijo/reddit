@@ -1,0 +1,12 @@
+create_table("subreddit_config") {
+  t.Column("subreddit_config_id", "uuid", {"primary": true})
+  t.Column("subreddit_id", "uuid", {})
+  t.Column("admin_config", "uuid", {})
+  t.Column("is_available", "bool", {"default": true})
+  t.Column("is_locked", "bool", {"default": true})
+  t.Column("text_available", "bool", {"default": true})
+  t.Column("images_available", "bool", {"default": true})
+  t.Column("video_available", "bool", {"default": true})
+  t.Column("link_available", "bool", {"default": true})
+  t.Column("poll_available", "bool", {"default": true})
+}

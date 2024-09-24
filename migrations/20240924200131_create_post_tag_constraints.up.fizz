@@ -1,0 +1,11 @@
+sql("alter table only posts_tags alter column post_tag_id set default gen_random_uuid()")
+
+add_foreign_key("posts_tags", "post_id", {"posts": ["post_id"]}, {
+    "on_delete": "cascade",
+    "on_update": "cascade",
+})
+
+add_foreign_key("posts_tags", "tag_id", {"tags": ["tag_id"]}, {
+    "on_delete": "cascade",
+    "on_update": "cascade",
+})

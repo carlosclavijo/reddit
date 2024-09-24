@@ -1,0 +1,7 @@
+drop_index("subreddits_users", "subreddits_users_subreddit_id_user_id_idx")
+
+drop_foreign_key("subreddits_users", "subreddits_users_subreddits_subreddit_id_fk", {})
+drop_foreign_key("subreddits_users", "subreddits_users_users_user_id_fk", {})
+
+sql("alter table subreddits_users drop constraint role_check")
+

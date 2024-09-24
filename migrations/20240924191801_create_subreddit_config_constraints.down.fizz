@@ -1,0 +1,4 @@
+drop_index("subreddit_config", "subreddit_config_subreddit_id_idx")
+
+drop_foreign_key("subreddit_config", "subreddit_config_subreddits_subreddit_id_fk", {})
+drop_foreign_key("subreddit_config", "subreddit_config_users_user_id_fk", {})

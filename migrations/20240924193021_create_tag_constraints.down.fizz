@@ -1,0 +1,2 @@
+drop_foreign_key("tags", "tags_subreddits_subreddit_id_fk", {})
+drop_foreign_key("tags", "tags_users_user_id_fk", {})

@@ -1,0 +1,6 @@
+create_table("images") {
+  t.Column("image_id", "uuid", {"primary": true})
+  t.Column("post_id", "uuid", {})
+  t.Column("title", "string", {"size": 50})
+  t.Column("url", "string", {"size": 200})
+}

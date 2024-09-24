@@ -1,0 +1,8 @@
+create_table("tags") {
+  t.Column("tag_id", "uuid", {"primary": true})
+  t.Column("subreddit_id", "uuid", {})
+  t.Column("admin_id", "uuid", {})
+  t.Column("name", "string", {"size": 30})
+  t.Column("color", "string", {"size": 20})
+  t.Column("is_mature", "bool", {"default": false})
+}

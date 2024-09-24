@@ -1,0 +1,4 @@
+drop_index("subreddits_topics", "subreddits_topics_subreddit_id_topic_id_idx")
+
+drop_foreign_key("subreddits_topics", "subreddits_topics_subreddits_subreddit_id_fk", {})
+drop_foreign_key("subreddits_topics", "subreddits_topics_topics_topic_id_fk", {})

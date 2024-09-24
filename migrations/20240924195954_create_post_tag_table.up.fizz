@@ -1,0 +1,5 @@
+create_table("posts_tags") {
+  t.Column("post_tag_id", "uuid", {"primary": true})
+  t.Column("post_id", "uuid", {})
+  t.Column("tag_id", "uuid", {})
+}

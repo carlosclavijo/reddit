@@ -1,0 +1,4 @@
+drop_foreign_key("posts", "posts_subreddits_subreddit_id_fk", {})
+
+sql("alter table posts drop constraint type_check")
+sql("alter table posts drop constraint comments_check")

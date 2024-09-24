@@ -1,0 +1,1 @@
+drop_foreign_key("images", "images_posts_post_id_fk", {})

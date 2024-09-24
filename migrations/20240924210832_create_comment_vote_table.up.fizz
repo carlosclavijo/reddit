@@ -1,0 +1,6 @@
+create_table("comments_vote") {
+  t.Column("comment_vote_id", "uuid", {"primary": true})
+  t.Column("comment_id", "uuid", {})
+  t.Column("user_id", "uuid", {})
+  t.Column("vote", "string", {"size": 8})
+}

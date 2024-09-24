@@ -1,0 +1,2 @@
+drop_foreign_key("comments_vote", "comments_vote_comments_comment_id_fk", {})
+drop_foreign_key("comments_vote", "comments_vote_users_user_id_fk", {})

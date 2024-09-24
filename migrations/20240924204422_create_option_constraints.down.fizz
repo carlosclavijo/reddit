@@ -1,0 +1,1 @@
+drop_foreign_key("options", "options_polls_poll_id_fk", {})

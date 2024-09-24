@@ -1,0 +1,6 @@
+create_table("subreddits_users") {
+  t.Column("subreddit_user_id", "uuid", {"primary": true})
+  t.Column("subreddit_id", "uuid", {})
+  t.Column("user_id", "uuid", {})
+  t.Column("role", "string", {"size": 9})
+}
