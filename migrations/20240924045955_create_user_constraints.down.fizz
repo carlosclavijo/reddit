@@ -1,0 +1,6 @@
+drop_index("users", "users_email_idx")
+drop_index("users", "users_username_idx")
+
+sql("alter table users drop constraint username_check")
+sql("alter table users drop constraint email_check")
+sql("alter table users drop constraint password_check")
