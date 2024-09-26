@@ -54,6 +54,28 @@ CREATE TABLE public.comments_vote (
 ALTER TABLE public.comments_vote OWNER TO postgres;
 
 --
+-- Name: configs; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.configs (
+    config_id uuid DEFAULT gen_random_uuid() NOT NULL,
+    subreddit_id uuid NOT NULL,
+    admin_config uuid NOT NULL,
+    is_available boolean DEFAULT true NOT NULL,
+    is_locked boolean DEFAULT true NOT NULL,
+    text_available boolean DEFAULT true NOT NULL,
+    images_available boolean DEFAULT true NOT NULL,
+    video_available boolean DEFAULT true NOT NULL,
+    link_available boolean DEFAULT true NOT NULL,
+    poll_available boolean DEFAULT true NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.configs OWNER TO postgres;
+
+--
 -- Name: images; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -179,28 +201,6 @@ CREATE TABLE public.schema_migration (
 ALTER TABLE public.schema_migration OWNER TO postgres;
 
 --
--- Name: subreddit_config; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.subreddit_config (
-    subreddit_config_id uuid DEFAULT gen_random_uuid() NOT NULL,
-    subreddit_id uuid NOT NULL,
-    admin_config uuid NOT NULL,
-    is_available boolean DEFAULT true NOT NULL,
-    is_locked boolean DEFAULT true NOT NULL,
-    text_available boolean DEFAULT true NOT NULL,
-    images_available boolean DEFAULT true NOT NULL,
-    video_available boolean DEFAULT true NOT NULL,
-    link_available boolean DEFAULT true NOT NULL,
-    poll_available boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
-ALTER TABLE public.subreddit_config OWNER TO postgres;
-
---
 -- Name: subreddits; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -277,6 +277,7 @@ ALTER TABLE public.tags OWNER TO postgres;
 
 CREATE TABLE public.topics (
     topic_id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
     name character varying(30) NOT NULL,
     sup_topic uuid,
     adult_content boolean DEFAULT false NOT NULL,
@@ -340,6 +341,14 @@ ALTER TABLE ONLY public.comments
 
 ALTER TABLE ONLY public.comments_vote
     ADD CONSTRAINT comments_vote_pkey PRIMARY KEY (comment_vote_id);
+
+
+--
+-- Name: configs configs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.configs
+    ADD CONSTRAINT configs_pkey PRIMARY KEY (config_id);
 
 
 --
@@ -407,14 +416,6 @@ ALTER TABLE ONLY public.schema_migration
 
 
 --
--- Name: subreddit_config subreddit_config_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.subreddit_config
-    ADD CONSTRAINT subreddit_config_pkey PRIMARY KEY (subreddit_config_id);
-
-
---
 -- Name: subreddits subreddits_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -471,6 +472,13 @@ ALTER TABLE ONLY public.videos
 
 
 --
+-- Name: configs_subreddit_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX configs_subreddit_id_idx ON public.configs USING btree (subreddit_id);
+
+
+--
 -- Name: links_post_id_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -482,13 +490,6 @@ CREATE UNIQUE INDEX links_post_id_idx ON public.links USING btree (post_id);
 --
 
 CREATE UNIQUE INDEX schema_migration_version_idx ON public.schema_migration USING btree (version);
-
-
---
--- Name: subreddit_config_subreddit_id_idx; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE UNIQUE INDEX subreddit_config_subreddit_id_idx ON public.subreddit_config USING btree (subreddit_id);
 
 
 --
@@ -581,6 +582,22 @@ ALTER TABLE ONLY public.comments_vote
 
 
 --
+-- Name: configs configs_subreddits_subreddit_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.configs
+    ADD CONSTRAINT configs_subreddits_subreddit_id_fk FOREIGN KEY (subreddit_id) REFERENCES public.subreddits(subreddit_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: configs configs_users_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.configs
+    ADD CONSTRAINT configs_users_user_id_fk FOREIGN KEY (admin_config) REFERENCES public.users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: images images_posts_post_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -661,22 +678,6 @@ ALTER TABLE ONLY public.posts
 
 
 --
--- Name: subreddit_config subreddit_config_subreddits_subreddit_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.subreddit_config
-    ADD CONSTRAINT subreddit_config_subreddits_subreddit_id_fk FOREIGN KEY (subreddit_id) REFERENCES public.subreddits(subreddit_id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: subreddit_config subreddit_config_users_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.subreddit_config
-    ADD CONSTRAINT subreddit_config_users_user_id_fk FOREIGN KEY (admin_config) REFERENCES public.users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
 -- Name: subreddits_topics subreddits_topics_subreddits_subreddit_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -738,6 +739,14 @@ ALTER TABLE ONLY public.tags
 
 ALTER TABLE ONLY public.topics
     ADD CONSTRAINT topics_topics_topic_id_fk FOREIGN KEY (sup_topic) REFERENCES public.topics(topic_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: topics topics_users_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics
+    ADD CONSTRAINT topics_users_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
