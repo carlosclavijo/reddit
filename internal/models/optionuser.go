@@ -7,8 +7,8 @@ import (
 // OptionUser is the user model
 type OptionUser struct {
 	OptionUser string
-	Option     string
-	User       string
+	OptionId   string
+	UserId     string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	Option     Option
