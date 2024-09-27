@@ -16,8 +16,8 @@ func (m *postgresDBRepo) InsertUser(res models.User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	stmt := `INSERT INTO users
-				(username, email, password, created_at, updated_at)
-				VALUES($1, $2, $3, $4, $5)`
-	_, err := m.DB.ExecContext(ctx, stmt, res.Username, res.Email, res.Password, time.Now(), time.Now())
+				(username, email, password)
+				VALUES($1, $2, $3)`
+	_, err := m.DB.ExecContext(ctx, stmt, res.Username, res.Email, res.Password)
 	return err
 }

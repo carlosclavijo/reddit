@@ -1,4 +1,6 @@
 sql("alter table only options alter column option_id set default gen_random_uuid()")
+sql("alter table only options alter column created_at set default NOW()")
+sql("alter table only options alter column updated_at set default NOW()")
 
 add_foreign_key("options", "poll_id", {"polls": ["poll_id"]}, {
     "on_delete": "cascade",

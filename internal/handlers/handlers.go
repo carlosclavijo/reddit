@@ -49,7 +49,9 @@ func (m *Repository) PostUser(w http.ResponseWriter, r *http.Request) {
 	log.Println(user.Password)
 	error := m.DB.InsertUser(user)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
+
 	}
 	//m.App.Session.Put(r.Context(), "user", user)
 }

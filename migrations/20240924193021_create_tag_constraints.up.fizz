@@ -1,4 +1,6 @@
 sql("alter table only tags alter column tag_id set default gen_random_uuid()")
+sql("alter table only tags alter column created_at set default NOW()")
+sql("alter table only tags alter column updated_at set default NOW()")
 
 add_foreign_key("tags", "subreddit_id", {"subreddits": ["subreddit_id"]}, {
     "on_delete": "cascade",

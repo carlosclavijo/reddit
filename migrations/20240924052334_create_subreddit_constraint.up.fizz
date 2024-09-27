@@ -1,6 +1,8 @@
 add_index("subreddits", "name",  {"unique": true})
 
 sql("alter table only subreddits alter column subreddit_id set default gen_random_uuid()")
+sql("alter table only subreddits alter column created_at set default NOW()")
+sql("alter table only subreddits alter column updated_at set default NOW()")
 sql("alter table subreddits add constraint privacy_check check(privacy in('public', 'restricted', 'private'))")
 
 add_foreign_key("subreddits", "created_by", {"users": ["user_id"]}, {

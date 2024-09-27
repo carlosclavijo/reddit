@@ -1,4 +1,6 @@
 sql("alter table only posts alter column post_id set default gen_random_uuid()")
+sql("alter table only posts alter column created_at set default NOW()")
+sql("alter table only posts alter column updated_at set default NOW()")
 sql("alter table posts add constraint comments_check check(comments >= 0)")
 
 add_foreign_key("posts", "subreddit_id", {"subreddits": ["subreddit_id"]}, {

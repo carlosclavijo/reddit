@@ -30,8 +30,8 @@ CREATE TABLE public.comments (
     user_id uuid NOT NULL,
     response_id uuid,
     comment text NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -46,8 +46,8 @@ CREATE TABLE public.comments_vote (
     comment_id uuid NOT NULL,
     user_id uuid NOT NULL,
     vote character varying(8) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -68,8 +68,8 @@ CREATE TABLE public.configs (
     video_available boolean DEFAULT true NOT NULL,
     link_available boolean DEFAULT true NOT NULL,
     poll_available boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -84,8 +84,8 @@ CREATE TABLE public.images (
     post_id uuid NOT NULL,
     title character varying(50) NOT NULL,
     url character varying(200) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -99,8 +99,8 @@ CREATE TABLE public.links (
     link_id uuid DEFAULT gen_random_uuid() NOT NULL,
     post_id uuid NOT NULL,
     link character varying(300) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -114,8 +114,8 @@ CREATE TABLE public.option_users (
     option_users_id uuid DEFAULT gen_random_uuid() NOT NULL,
     option_id uuid NOT NULL,
     user_id uuid NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -130,8 +130,8 @@ CREATE TABLE public.options (
     poll_id uuid NOT NULL,
     value character varying(50) NOT NULL,
     votes integer DEFAULT 0 NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -144,8 +144,8 @@ ALTER TABLE public.options OWNER TO postgres;
 CREATE TABLE public.polls (
     poll_id uuid DEFAULT gen_random_uuid() NOT NULL,
     post_id uuid NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -165,8 +165,8 @@ CREATE TABLE public.posts (
     brand boolean DEFAULT false NOT NULL,
     votes integer DEFAULT 0 NOT NULL,
     comments integer DEFAULT 0 NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
     CONSTRAINT comments_check CHECK ((comments >= 0)),
     CONSTRAINT type_check CHECK (((type)::text = ANY ((ARRAY['text'::character varying, 'image'::character varying, 'video'::character varying, 'link'::character varying, 'poll'::character varying])::text[])))
 );
@@ -182,8 +182,8 @@ CREATE TABLE public.posts_tags (
     post_tag_id uuid DEFAULT gen_random_uuid() NOT NULL,
     post_id uuid NOT NULL,
     tag_id uuid NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -213,8 +213,8 @@ CREATE TABLE public.subreddits (
     banner character varying(200),
     privacy character varying(11) DEFAULT 'public'::character varying NOT NULL,
     is_mature boolean DEFAULT false NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
     CONSTRAINT privacy_check CHECK (((privacy)::text = ANY ((ARRAY['public'::character varying, 'restricted'::character varying, 'private'::character varying])::text[])))
 );
 
@@ -229,8 +229,8 @@ CREATE TABLE public.subreddits_topics (
     subreddit_topic_id uuid DEFAULT gen_random_uuid() NOT NULL,
     subreddit_id uuid NOT NULL,
     topic_id uuid NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -245,8 +245,8 @@ CREATE TABLE public.subreddits_users (
     subreddit_id uuid NOT NULL,
     user_id uuid NOT NULL,
     role character varying(9) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
     CONSTRAINT role_check CHECK (((role)::text = ANY ((ARRAY['admin'::character varying, 'applicant'::character varying, 'member'::character varying, 'mod'::character varying, 'banned'::character varying])::text[])))
 );
 
@@ -264,8 +264,8 @@ CREATE TABLE public.tags (
     name character varying(30) NOT NULL,
     color character varying(20) NOT NULL,
     is_mature boolean DEFAULT false NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -281,8 +281,8 @@ CREATE TABLE public.topics (
     name character varying(30) NOT NULL,
     sup_topic uuid,
     adult_content boolean DEFAULT false NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -301,8 +301,8 @@ CREATE TABLE public.users (
     comment_karma integer DEFAULT 0 NOT NULL,
     account_available boolean DEFAULT true NOT NULL,
     profile_pic character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
     CONSTRAINT email_check CHECK (((email)::text ~* '^[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::text)),
     CONSTRAINT username_check CHECK ((length((username)::text) >= 8))
 );
@@ -319,8 +319,8 @@ CREATE TABLE public.videos (
     post_id uuid NOT NULL,
     title character varying(50) NOT NULL,
     url character varying(200) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 

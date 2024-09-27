@@ -1,4 +1,6 @@
 sql("alter table only videos alter column video_id set default gen_random_uuid()")
+sql("alter table only videos alter column created_at set default NOW()")
+sql("alter table only videos alter column updated_at set default NOW()")
 
 add_index("videos", "post_id",  {"unique": true})
 

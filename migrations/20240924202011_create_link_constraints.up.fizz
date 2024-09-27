@@ -1,4 +1,6 @@
 sql("alter table only links alter column link_id set default gen_random_uuid()")
+sql("alter table only links alter column created_at set default NOW()")
+sql("alter table only links alter column updated_at set default NOW()")
 
 add_index("links", "post_id",  {"unique": true})
 

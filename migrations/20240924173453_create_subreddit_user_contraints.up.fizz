@@ -1,4 +1,6 @@
 sql("alter table only subreddits_users alter column subreddit_user_id set default gen_random_uuid()")
+sql("alter table only subreddits_users alter column created_at set default NOW()")
+sql("alter table only subreddits_users alter column updated_at set default NOW()")
 
 add_index("subreddits_users", ["subreddit_id", "user_id"],  {"unique": true})
 
