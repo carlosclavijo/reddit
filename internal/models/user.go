@@ -1,10 +1,14 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/gofrs/uuid"
+)
 
 // User is the user model
 type User struct {
-	UserId           string
+	UserId           uuid.UUID
 	Username         string
 	Email            string
 	Password         string

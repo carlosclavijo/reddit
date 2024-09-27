@@ -1,12 +1,16 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/gofrs/uuid"
+)
 
 // Config is the user model
 type Config struct {
-	ConfigId       string
-	SubredditId    string
-	AdminConfig    string
+	ConfigId       uuid.UUID
+	SubredditId    uuid.UUID
+	AdminConfig    uuid.UUID
 	IsAvailable    bool
 	IsLocked       bool
 	TextAvailable  bool
@@ -16,6 +20,4 @@ type Config struct {
 	PollAvailable  bool
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	Subreddit      Subreddit
-	User           User
 }

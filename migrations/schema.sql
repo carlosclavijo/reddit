@@ -304,7 +304,6 @@ CREATE TABLE public.users (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     CONSTRAINT email_check CHECK (((email)::text ~* '^[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::text)),
-    CONSTRAINT password_check CHECK (((password)::text ~* '^($1=.*[a-z])($2=.*[A-Z])($3=.*\d)($4=.*[@$!%*$5&])[A-Za-z\d@$!%*$6&]{8,}$'::text)),
     CONSTRAINT username_check CHECK ((length((username)::text) >= 8))
 );
 

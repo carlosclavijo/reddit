@@ -11,6 +11,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/carlosclavijo/reddit/internal/config"
 	"github.com/carlosclavijo/reddit/internal/driver"
+	"github.com/carlosclavijo/reddit/internal/handlers"
 	"github.com/carlosclavijo/reddit/internal/models"
 )
 
@@ -79,5 +80,8 @@ func run() (*driver.DB, error) {
 	}
 	log.Println("Connected to database!")
 
+	app.UseCache = false
+	repo := handlers.NewRepo(&app, db)
+	handlers.NewHandlers(repo)
 	return db, nil
 }

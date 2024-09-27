@@ -2,15 +2,15 @@ package models
 
 import (
 	"time"
+
+	"github.com/gofrs/uuid"
 )
 
 // OptionUser is the user model
 type OptionUser struct {
-	OptionUser string
-	OptionId   string
-	UserId     string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	Option     Option
-	User       User
+	OptionUserId uuid.UUID
+	OptionId     uuid.UUID
+	UserId       uuid.UUID
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

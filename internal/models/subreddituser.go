@@ -1,15 +1,17 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/gofrs/uuid"
+)
 
 // SubredditUser is the user model
 type SubredditUser struct {
-	SubredditUserId string
-	SubredditId     string
-	UserId          string
+	SubredditUserId uuid.UUID
+	SubredditId     uuid.UUID
+	UserId          uuid.UUID
 	Role            string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	Subreddit       Subreddit
-	User            User
 }
