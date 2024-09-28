@@ -2,3 +2,4 @@ database.yml
 go.mod
 go.sum
 script.sql
+seeder.sql

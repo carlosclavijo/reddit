@@ -1,6 +1,5 @@
 create_table("topics") {
   t.Column("topic_id", "uuid", {"primary": true})
-  t.Column("user_id", "uuid", {})
   t.Column("name", "string", {"size": 30})
   t.Column("sup_topic", "uuid", {"null": true})
   t.Column("adult_content", "bool", {"default": false})

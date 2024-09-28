@@ -277,7 +277,6 @@ ALTER TABLE public.tags OWNER TO postgres;
 
 CREATE TABLE public.topics (
     topic_id uuid DEFAULT gen_random_uuid() NOT NULL,
-    user_id uuid NOT NULL,
     name character varying(30) NOT NULL,
     sup_topic uuid,
     adult_content boolean DEFAULT false NOT NULL,
@@ -738,14 +737,6 @@ ALTER TABLE ONLY public.tags
 
 ALTER TABLE ONLY public.topics
     ADD CONSTRAINT topics_topics_topic_id_fk FOREIGN KEY (sup_topic) REFERENCES public.topics(topic_id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: topics topics_users_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.topics
-    ADD CONSTRAINT topics_users_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
