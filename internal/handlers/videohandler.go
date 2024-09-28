@@ -16,10 +16,12 @@ func (m *Repository) PostVideo(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	error := m.DB.InsertVideo(Video)
+	newVideo, error := m.DB.InsertVideo(Video)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
 	}
-	//m.App.Session.Put(r.Context(), "user", user)
+	m.App.Session.Put(r.Context(), "video", Video)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newVideo)
 }

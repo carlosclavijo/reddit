@@ -159,6 +159,7 @@ CREATE TABLE public.posts (
     post_id uuid DEFAULT gen_random_uuid() NOT NULL,
     subreddit_id uuid NOT NULL,
     user_id uuid NOT NULL,
+    title character varying(100) NOT NULL,
     description text NOT NULL,
     type character varying(20) DEFAULT 'text'::character varying NOT NULL,
     nsfw boolean DEFAULT false NOT NULL,
@@ -481,6 +482,13 @@ CREATE UNIQUE INDEX configs_subreddit_id_idx ON public.configs USING btree (subr
 --
 
 CREATE UNIQUE INDEX links_post_id_idx ON public.links USING btree (post_id);
+
+
+--
+-- Name: options_value_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX options_value_idx ON public.options USING btree (value);
 
 
 --

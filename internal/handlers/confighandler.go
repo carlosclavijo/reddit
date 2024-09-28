@@ -16,10 +16,12 @@ func (m *Repository) PostConfig(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	error := m.DB.InsertConfig(Config)
+	newConfig, error := m.DB.InsertConfig(Config)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
 	}
-	//m.App.Session.Put(r.Context(), "user", user)
+	m.App.Session.Put(r.Context(), "config", Config)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newConfig)
 }

@@ -16,10 +16,12 @@ func (m *Repository) PostTopic(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	error := m.DB.InsertTopic(Topic)
+	newTopic, error := m.DB.InsertTopic(Topic)
 	if error != nil {
 		helpers.ServerError(w, error)
 
 	}
-	//m.App.Session.Put(r.Context(), "user", user)
+	m.App.Session.Put(r.Context(), "topic", Topic)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newTopic)
 }

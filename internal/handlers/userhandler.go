@@ -16,10 +16,12 @@ func (m *Repository) PostUser(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	error := m.DB.InsertUser(User)
+	newUser, error := m.DB.InsertUser(User)
 	if error != nil {
 		helpers.ServerError(w, error)
 
 	}
-	//m.App.Session.Put(r.Context(), "user", user)
+	m.App.Session.Put(r.Context(), "user", User)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newUser)
 }

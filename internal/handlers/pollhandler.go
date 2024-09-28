@@ -17,11 +17,13 @@ func (m *Repository) PostPoll(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	error := m.DB.InsertPoll(Poll)
+	newPoll, error := m.DB.InsertPoll(Poll)
 	if error != nil {
 		log.Println(error)
 		helpers.ServerError(w, error)
 		return
 	}
-	//m.App.Session.Put(r.Context(), "user", user)
+	m.App.Session.Put(r.Context(), "poll", Poll)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newPoll)
 }

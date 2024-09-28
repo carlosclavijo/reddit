@@ -16,10 +16,12 @@ func (m *Repository) PostImage(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	error := m.DB.InsertImage(Image)
+	newImage, error := m.DB.InsertImage(Image)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
 	}
-	//m.App.Session.Put(r.Context(), "user", user)
+	m.App.Session.Put(r.Context(), "image", Image)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newImage)
 }

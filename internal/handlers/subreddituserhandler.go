@@ -16,10 +16,12 @@ func (m *Repository) PostSubredditUser(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	error := m.DB.InsertSubredditUser(SubredditUser)
+	newSubredditUser, error := m.DB.InsertSubredditUser(SubredditUser)
 	if error != nil {
 		helpers.ServerError(w, error)
 
 	}
-	//m.App.Session.Put(r.Context(), "user", user)
+	m.App.Session.Put(r.Context(), "subreddituser", SubredditUser)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newSubredditUser)
 }
