@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/carlosclavijo/reddit/internal/helpers"
@@ -18,6 +19,7 @@ func (m *Repository) PostConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	newConfig, error := m.DB.InsertConfig(Config)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
 		return
 	}

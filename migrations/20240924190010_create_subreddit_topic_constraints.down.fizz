@@ -1,4 +1,9 @@
 drop_index("subreddits_topics", "subreddits_topics_subreddit_id_topic_id_idx")
 
+add_foreign_key("topics", "user_id", {"users": ["user_id"]}, {
+    "on_delete": "cascade",
+    "on_update": "cascade",
+})
+
 drop_foreign_key("subreddits_topics", "subreddits_topics_subreddits_subreddit_id_fk", {})
 drop_foreign_key("subreddits_topics", "subreddits_topics_topics_topic_id_fk", {})

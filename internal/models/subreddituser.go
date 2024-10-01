@@ -14,4 +14,6 @@ type SubredditUser struct {
 	Role            string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Subreddit       Subreddit
+	User            User
 }

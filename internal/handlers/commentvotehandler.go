@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/carlosclavijo/reddit/internal/helpers"
@@ -17,7 +16,7 @@ func (m *Repository) PostCommentVote(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	newCommentVote, error := m.DB.InsertCommentVote(CommentVote)
+	/*newCommentVote, error := m.DB.InsertCommentVote(CommentVote)
 	if error != nil {
 		log.Println(error)
 		helpers.ServerError(w, error)
@@ -25,5 +24,5 @@ func (m *Repository) PostCommentVote(w http.ResponseWriter, r *http.Request) {
 	}
 	m.App.Session.Put(r.Context(), "commentvote", CommentVote)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newCommentVote)
+	json.NewEncoder(w).Encode(newCommentVote)*/
 }

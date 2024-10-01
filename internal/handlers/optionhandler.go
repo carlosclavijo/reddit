@@ -16,12 +16,12 @@ func (m *Repository) PostOption(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	newOption, error := m.DB.InsertOption(Option)
+	/*newOption, error := m.DB.InsertOption(Option)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
 	}
 	m.App.Session.Put(r.Context(), "option", Option)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newOption)
+	json.NewEncoder(w).Encode(newOption)*/
 }

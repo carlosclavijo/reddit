@@ -16,12 +16,12 @@ func (m *Repository) PostComment(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	newComment, error := m.DB.InsertComment(Comment)
+	/*newComment, error := m.DB.InsertComment(Comment)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
 	}
 	m.App.Session.Put(r.Context(), "comment", Comment)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newComment)
+	json.NewEncoder(w).Encode(newComment)*/
 }

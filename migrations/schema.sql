@@ -278,6 +278,7 @@ ALTER TABLE public.tags OWNER TO postgres;
 
 CREATE TABLE public.topics (
     topic_id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
     name character varying(30) NOT NULL,
     sup_topic uuid,
     adult_content boolean DEFAULT false NOT NULL,
@@ -468,13 +469,6 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.videos
     ADD CONSTRAINT videos_pkey PRIMARY KEY (video_id);
-
-
---
--- Name: configs_subreddit_id_idx; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE UNIQUE INDEX configs_subreddit_id_idx ON public.configs USING btree (subreddit_id);
 
 
 --

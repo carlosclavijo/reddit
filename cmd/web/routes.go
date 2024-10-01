@@ -18,7 +18,9 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Get("/", handlers.Repo.HelloWorld)
 
+	mux.Get("/users/{userId}", handlers.Repo.GetUserById)
 	mux.Post("/users", handlers.Repo.PostUser)
+
 	mux.Post("/subreddits", handlers.Repo.PostSubeddit)
 	mux.Post("/subredditusers", handlers.Repo.PostSubredditUser)
 	mux.Post("/topics", handlers.Repo.PostTopic)

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -12,10 +13,11 @@ type Subreddit struct {
 	Name        string
 	Description string
 	CreatedBy   uuid.UUID
-	Icon        string
-	Banner      string
+	Icon        sql.NullString
+	Banner      sql.NullString
 	Privacy     string
 	IsMature    bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	User        User
 }

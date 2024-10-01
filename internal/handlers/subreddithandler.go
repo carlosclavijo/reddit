@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/carlosclavijo/reddit/internal/helpers"
@@ -18,8 +19,8 @@ func (m *Repository) PostSubeddit(w http.ResponseWriter, r *http.Request) {
 	}
 	newSubreddit, error := m.DB.InsertSubreddit(Subreddit)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
-
 	}
 	m.App.Session.Put(r.Context(), "subreddit", Subreddit)
 	w.Header().Set("Content-Type", "application/json")

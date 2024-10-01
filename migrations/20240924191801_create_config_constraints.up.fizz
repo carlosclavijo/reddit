@@ -2,8 +2,6 @@ sql("alter table only configs alter column config_id set default gen_random_uuid
 sql("alter table only configs alter column created_at set default NOW()")
 sql("alter table only configs alter column updated_at set default NOW()")
 
-add_index("configs", "subreddit_id",  {"unique": true})
-
 add_foreign_key("configs", "subreddit_id", {"subreddits": ["subreddit_id"]}, {
     "on_delete": "cascade",
     "on_update": "cascade",

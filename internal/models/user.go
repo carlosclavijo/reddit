@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -12,10 +13,10 @@ type User struct {
 	Username         string
 	Email            string
 	Password         string
-	PostKarma        int
-	CommentKarma     int
+	PostKarma        string
+	CommentKarma     string
 	AccountAvailable bool
-	ProfilePic       string
+	ProfilePic       sql.NullString
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }

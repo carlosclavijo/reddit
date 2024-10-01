@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/carlosclavijo/reddit/internal/helpers"
@@ -13,11 +14,13 @@ func (m *Repository) PostTopic(w http.ResponseWriter, r *http.Request) {
 	var Topic models.Topic
 	err := decoder.Decode(&Topic)
 	if err != nil {
+		log.Println(err)
 		helpers.ServerError(w, err)
 		return
 	}
 	newTopic, error := m.DB.InsertTopic(Topic)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
 
 	}

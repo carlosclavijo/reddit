@@ -4,13 +4,15 @@ import "github.com/carlosclavijo/reddit/internal/models"
 
 type DatabaseRepo interface {
 	InsertUser(res models.User) (models.User, error)
+	GetUser(id string) (models.User, error)
+
 	InsertSubreddit(res models.Subreddit) (models.Subreddit, error)
-	/*InsertSubredditUser(res models.SubredditUser) (models.SubredditUser, error)
+	InsertSubredditUser(res models.SubredditUser) (models.SubredditUser, error)
 	InsertTopic(res models.Topic) (models.Topic, error)
 	InsertSubredditTopic(res models.SubredditTopic) (models.SubredditTopic, error)
 	InsertConfig(res models.Config) (models.Config, error)
-	InsertTag(res models.Tag) (models.Tag, error)
-	InsertPost(res models.Post) (models.Post, error)
+	//InsertTag(res models.Tag) (models.Tag, error)
+	/*InsertPost(res models.Post) (models.Post, error)
 	InsertPostTag(res models.PostTag) (models.PostTag, error)
 	InsertImage(res models.Image) (models.Image, error)
 	InsertVideo(res models.Video) (models.Video, error)

@@ -11,7 +11,7 @@ type Topic struct {
 	TopicId      uuid.UUID
 	UserId       uuid.UUID
 	Name         string
-	SupTopic     int
+	SupTopic     uuid.NullUUID
 	AdultContent bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

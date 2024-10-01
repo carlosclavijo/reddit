@@ -16,12 +16,12 @@ func (m *Repository) PostPostTag(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-	newPostTag, error := m.DB.InsertPostTag(PostTag)
+	/*newPostTag, error := m.DB.InsertPostTag(PostTag)
 	if error != nil {
 		helpers.ServerError(w, error)
 
 	}
 	m.App.Session.Put(r.Context(), "posttag", PostTag)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newPostTag)
+	json.NewEncoder(w).Encode(newPostTag)*/
 }
