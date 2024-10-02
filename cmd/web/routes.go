@@ -18,11 +18,24 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Get("/", handlers.Repo.HelloWorld)
 
+	mux.Get("/users", handlers.Repo.GetUsersList)
 	mux.Get("/users/{userId}", handlers.Repo.GetUserById)
 	mux.Post("/users", handlers.Repo.PostUser)
+	mux.Put("/users/{userId}", handlers.Repo.PutUser)
+	mux.Patch("/users/post/{userId}", handlers.Repo.AddPostKarma)
+	mux.Patch("/users/comment/{userId}", handlers.Repo.AddCommentKarma)
+	mux.Delete("/users/{userId}", handlers.Repo.DeleteUser)
 
+	mux.Get("/subreddits", handlers.Repo.GetSubredditsList)
+	mux.Get("/subreddits/users/{subredditId}", handlers.Repo.GetSubredditByUserId)
+	mux.Get("/subreddits/{subredditId}", handlers.Repo.GetSubredditById)
 	mux.Post("/subreddits", handlers.Repo.PostSubeddit)
+	mux.Put("/subreddits/{subredditId}", handlers.Repo.PutSubreddit)
+	mux.Delete("/subreddits/{subredditId}", handlers.Repo.DeleteSubreddit)
+
+	mux.Get("/subredditsusers", handlers.Repo.GetSubredditsUsersList)
 	mux.Post("/subredditusers", handlers.Repo.PostSubredditUser)
+
 	mux.Post("/topics", handlers.Repo.PostTopic)
 	mux.Post("/subreddittopics", handlers.Repo.PostSubedditTopic)
 	mux.Post("/configs", handlers.Repo.PostConfig)

@@ -13,8 +13,8 @@ type User struct {
 	Username         string
 	Email            string
 	Password         string
-	PostKarma        string
-	CommentKarma     string
+	PostKarma        int
+	CommentKarma     int
 	AccountAvailable bool
 	ProfilePic       sql.NullString
 	CreatedAt        time.Time

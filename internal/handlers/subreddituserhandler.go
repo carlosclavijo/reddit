@@ -8,6 +8,15 @@ import (
 	"github.com/carlosclavijo/reddit/internal/models"
 )
 
+func (m *Repository) GetSubredditsUsersList(w http.ResponseWriter, r *http.Request) {
+	subredditsusers, error := m.DB.GetSubredditsUsers()
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(subredditsusers)
+}
+
 func (m *Repository) PostSubredditUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var SubredditUser models.SubredditUser

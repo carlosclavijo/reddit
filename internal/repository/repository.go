@@ -3,11 +3,25 @@ package repository
 import "github.com/carlosclavijo/reddit/internal/models"
 
 type DatabaseRepo interface {
-	InsertUser(res models.User) (models.User, error)
-	GetUser(id string) (models.User, error)
+	GetUsers() ([]models.User, error)
+	GetUserById(id string) (models.User, error)
+	InsertUser(r models.User) (models.User, error)
+	UpdateUser(id string, r models.User) (models.User, error)
+	AddUserPostKarma(id string) (models.User, error)
+	AddUserCommentKarma(id string) (models.User, error)
+	DeleteUser(id string) (models.User, error)
 
+	GetSubreddits() ([]models.Subreddit, error)
+	GetSubredditById(id string) (models.Subreddit, error)
+	GetSubredditByUserId(id string) ([]models.Subreddit, error)
 	InsertSubreddit(res models.Subreddit) (models.Subreddit, error)
+	UpdateSubreddit(id string, r models.Subreddit) (models.Subreddit, error)
+	DeleteSubreddit(id string) (models.Subreddit, error)
+
+	GetSubredditsUsers() ([]models.SubredditUser, error)
+	GetSubredditUserById(id string) (models.SubredditUser, error)
 	InsertSubredditUser(res models.SubredditUser) (models.SubredditUser, error)
+
 	InsertTopic(res models.Topic) (models.Topic, error)
 	InsertSubredditTopic(res models.SubredditTopic) (models.SubredditTopic, error)
 	InsertConfig(res models.Config) (models.Config, error)
@@ -23,3 +37,5 @@ type DatabaseRepo interface {
 	InsertComment(res models.Comment) (models.Comment, error)
 	InsertCommentVote(res models.CommentVote) (models.CommentVote, error)*/
 }
+
+//8a1196bb-d0f9-44a5-af43-cd59b186345e
