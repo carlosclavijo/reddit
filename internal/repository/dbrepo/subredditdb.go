@@ -125,6 +125,7 @@ func (m *postgresDBRepo) UpdateSubreddit(id string, r models.Subreddit) (models.
 	return s, err
 }
 
+// DeleteSubreddit deleters the subreddit from the database
 func (m *postgresDBRepo) DeleteSubreddit(id string) (models.Subreddit, error) {
 	var s models.Subreddit
 	stmt := `DELETE FROM subreddits  WHERE subreddit_id = '` + id + `' RETURNING *`

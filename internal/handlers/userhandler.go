@@ -15,6 +15,9 @@ func (m *Repository) GetUsersList(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Methods”, "GET, POST, OPTIONS”)
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept")
 	json.NewEncoder(w).Encode(users)
 }
 
@@ -61,7 +64,7 @@ func (m *Repository) PutUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newUser)
 }
 
-func (m *Repository) AddPostKarma(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) PatchPostKarma(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[3]
 	User, error := m.DB.AddUserPostKarma(value)
 	if error != nil {
@@ -72,9 +75,20 @@ func (m *Repository) AddPostKarma(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(User)
 }
 
-func (m *Repository) AddCommentKarma(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) PatchCommentKarma(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[3]
 	User, error := m.DB.AddUserCommentKarma(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
+	//m.App.Session.Put(r.Context(), "user", User)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(User)
+}
+
+func (m *Repository) PatchAdmin(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[3]
+	User, error := m.DB.AdminUser(value)
 	if error != nil {
 		helpers.ServerError(w, error)
 	}

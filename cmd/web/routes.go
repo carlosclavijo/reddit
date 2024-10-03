@@ -22,8 +22,9 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/users/{userId}", handlers.Repo.GetUserById)
 	mux.Post("/users", handlers.Repo.PostUser)
 	mux.Put("/users/{userId}", handlers.Repo.PutUser)
-	mux.Patch("/users/post/{userId}", handlers.Repo.AddPostKarma)
-	mux.Patch("/users/comment/{userId}", handlers.Repo.AddCommentKarma)
+	mux.Patch("/users/post/{userId}", handlers.Repo.PatchPostKarma)
+	mux.Patch("/users/comment/{userId}", handlers.Repo.PatchCommentKarma)
+	mux.Patch("/users/admin/{userId}", handlers.Repo.PatchAdmin)
 	mux.Delete("/users/{userId}", handlers.Repo.DeleteUser)
 
 	mux.Get("/subreddits", handlers.Repo.GetSubredditsList)
@@ -34,9 +35,19 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Delete("/subreddits/{subredditId}", handlers.Repo.DeleteSubreddit)
 
 	mux.Get("/subredditsusers", handlers.Repo.GetSubredditsUsersList)
+	mux.Get("/subredditsusers/{subredditUserId}", handlers.Repo.GetSubredditUserById)
+	mux.Get("/subredditsusers/members/{subredditId}", handlers.Repo.GetSubredditMembers)
+	mux.Get("/subredditsusers/members/{role}/{subredditId}", handlers.Repo.GetSubredditMembersByRole)
 	mux.Post("/subredditusers", handlers.Repo.PostSubredditUser)
+	mux.Put("/subredditusers/{subredditUserId}", handlers.Repo.PutSubredditUser)
+	mux.Delete("/subredditusers/{subredditUserId}", handlers.Repo.DeleteSubredditUser)
 
+	mux.Get("/topics", handlers.Repo.GetTopicsList)
+	mux.Get("/topics/{topicId}", handlers.Repo.GetTopicById)
+	mux.Get("/topics/sub/{topicId}", handlers.Repo.GetSubtopics)
 	mux.Post("/topics", handlers.Repo.PostTopic)
+	mux.Put("/topics/{topicId}", handlers.Repo.PutTopic)
+
 	mux.Post("/subreddittopics", handlers.Repo.PostSubedditTopic)
 	mux.Post("/configs", handlers.Repo.PostConfig)
 	mux.Post("/tags", handlers.Repo.PostTag)

@@ -7,4 +7,5 @@ create_table("users") {
   t.Column("comment_karma", "integer", {"default": 0})
   t.Column("account_available", "bool", {"default": true})
   t.Column("profile_pic", "string", {"null": true})
+  t.Column("admin", "bool", {"default": false})
 }

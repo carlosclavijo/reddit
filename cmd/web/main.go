@@ -49,6 +49,7 @@ func run() (*driver.DB, error) {
 	gob.Register(models.SubredditTopic{})
 	gob.Register(models.Config{})
 	gob.Register(models.Tag{})
+	gob.Register(models.Topic{})
 	gob.Register(models.Post{})
 	gob.Register(models.PostTag{})
 	gob.Register(models.Image{})

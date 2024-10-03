@@ -9,6 +9,7 @@ type DatabaseRepo interface {
 	UpdateUser(id string, r models.User) (models.User, error)
 	AddUserPostKarma(id string) (models.User, error)
 	AddUserCommentKarma(id string) (models.User, error)
+	AdminUser(id string) (models.User, error)
 	DeleteUser(id string) (models.User, error)
 
 	GetSubreddits() ([]models.Subreddit, error)
@@ -20,9 +21,18 @@ type DatabaseRepo interface {
 
 	GetSubredditsUsers() ([]models.SubredditUser, error)
 	GetSubredditUserById(id string) (models.SubredditUser, error)
+	GetSubredditMembers(id string) ([]models.User, error) //SubredditId
+	GetSubredditMembersByRole(id string, role string) ([]models.User, error)
 	InsertSubredditUser(res models.SubredditUser) (models.SubredditUser, error)
+	UpdateSubredditUser(id string, r models.SubredditUser) (models.SubredditUser, error)
+	DeleteSubredditUser(id string) (models.SubredditUser, error)
 
+	GetTopics() ([]models.Topic, error)
+	GetTopicById(id string) (models.Topic, error)
+	GetSubTopics(id string) ([]models.Topic, error)
 	InsertTopic(res models.Topic) (models.Topic, error)
+	UpdateTopic(id string, res models.Topic) (models.Topic, error)
+
 	InsertSubredditTopic(res models.SubredditTopic) (models.SubredditTopic, error)
 	InsertConfig(res models.Config) (models.Config, error)
 	//InsertTag(res models.Tag) (models.Tag, error)

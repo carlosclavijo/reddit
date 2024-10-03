@@ -3,3 +3,29 @@ go.mod
 go.sum
 script.sql
 seeder.sql
+/reddit-app/node_modules
+/reddit-app/README.md
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/reddit-app/node_modules
+/reddit-app/.pnp
+/reddit-app/.pnp.js
+
+# testing
+/reddit-app/coverage
+
+# production
+/reddit-app/build
+
+# misc
+/reddit-app/.DS_Store
+/reddit-app/.env.local
+/reddit-app/.env.development.local
+/reddit-app/.env.test.local
+/reddit-app/.env.production.local
+
+/reddit-app/npm-debug.log*
+/reddit-app/yarn-debug.log*
+/reddit-app/yarn-error.log*

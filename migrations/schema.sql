@@ -302,6 +302,7 @@ CREATE TABLE public.users (
     comment_karma integer DEFAULT 0 NOT NULL,
     account_available boolean DEFAULT true NOT NULL,
     profile_pic character varying(255),
+    admin boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL,
     CONSTRAINT email_check CHECK (((email)::text ~* '^[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::text)),
@@ -739,6 +740,14 @@ ALTER TABLE ONLY public.tags
 
 ALTER TABLE ONLY public.topics
     ADD CONSTRAINT topics_topics_topic_id_fk FOREIGN KEY (sup_topic) REFERENCES public.topics(topic_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: topics topics_users_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics
+    ADD CONSTRAINT topics_users_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

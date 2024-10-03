@@ -17,6 +17,7 @@ type User struct {
 	CommentKarma     int
 	AccountAvailable bool
 	ProfilePic       sql.NullString
+	Admin            bool
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }

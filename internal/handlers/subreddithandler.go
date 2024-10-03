@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -33,7 +32,6 @@ func (m *Repository) GetSubredditByUserId(w http.ResponseWriter, r *http.Request
 	value := strings.Split(r.URL.Path, "/")[3]
 	users, error := m.DB.GetSubredditByUserId(value)
 	if error != nil {
-		log.Println(error)
 		helpers.ServerError(w, error)
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -67,7 +65,6 @@ func (m *Repository) PutSubreddit(w http.ResponseWriter, r *http.Request) {
 	}
 	newSubreddit, error := m.DB.UpdateSubreddit(value, Subreddit)
 	if error != nil {
-		log.Println(error)
 		helpers.ServerError(w, error)
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
