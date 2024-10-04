@@ -43,9 +43,9 @@ func main() {
 
 func run() (*driver.DB, error) {
 	gob.Register(models.User{})
+	gob.Register(models.Topic{})
 	gob.Register(models.Subreddit{})
 	gob.Register(models.SubredditUser{})
-	gob.Register(models.Topic{})
 	gob.Register(models.SubredditTopic{})
 	gob.Register(models.Config{})
 	gob.Register(models.Tag{})

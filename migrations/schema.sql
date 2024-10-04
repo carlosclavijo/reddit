@@ -290,6 +290,21 @@ CREATE TABLE public.topics (
 ALTER TABLE public.topics OWNER TO postgres;
 
 --
+-- Name: topics_users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.topics_users (
+    topic_user_id uuid DEFAULT gen_random_uuid() NOT NULL,
+    topic_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.topics_users OWNER TO postgres;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -457,6 +472,14 @@ ALTER TABLE ONLY public.topics
 
 
 --
+-- Name: topics_users topics_users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics_users
+    ADD CONSTRAINT topics_users_pkey PRIMARY KEY (topic_user_id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -519,6 +542,13 @@ CREATE UNIQUE INDEX subreddits_users_subreddit_id_user_id_idx ON public.subreddi
 --
 
 CREATE UNIQUE INDEX topics_name_idx ON public.topics USING btree (name);
+
+
+--
+-- Name: topics_users_topic_id_user_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX topics_users_topic_id_user_id_idx ON public.topics_users USING btree (topic_id, user_id);
 
 
 --
@@ -743,11 +773,27 @@ ALTER TABLE ONLY public.topics
 
 
 --
+-- Name: topics_users topics_users_topics_topic_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics_users
+    ADD CONSTRAINT topics_users_topics_topic_id_fk FOREIGN KEY (topic_id) REFERENCES public.topics(topic_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: topics topics_users_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.topics
     ADD CONSTRAINT topics_users_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: topics_users topics_users_users_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics_users
+    ADD CONSTRAINT topics_users_users_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

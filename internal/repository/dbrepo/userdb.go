@@ -18,6 +18,7 @@ func (m *postgresDBRepo) GetUsers() ([]models.User, error) {
 		if err != nil {
 			return users, err
 		}
+		u.Password = "restricted"
 		users = append(users, u)
 	}
 	return users, err

@@ -1,0 +1,15 @@
+sql("alter table only topics_users alter column topic_user_id set default gen_random_uuid()")
+sql("alter table only topics_users alter column created_at set default NOW()")
+sql("alter table only topics_users alter column updated_at set default NOW()")
+
+add_index("topics_users", ["topic_id", "user_id"],  {"unique": true})
+
+add_foreign_key("topics_users", "topic_id", {"topics": ["topic_id"]}, {
+    "on_delete": "cascade",
+    "on_update": "cascade",
+})
+
+add_foreign_key("topics_users", "user_id", {"users": ["user_id"]}, {
+    "on_delete": "cascade",
+    "on_update": "cascade",
+})

@@ -91,20 +91,31 @@ func (m *postgresDBRepo) InsertTopic(r models.Topic) (models.Topic, error) {
 }
 
 // UpdateTopic updates topic information
-func (m *postgresDBRepo) UpdateTopic(id string, res models.Topic) (models.Topic, error) {
+func (m *postgresDBRepo) UpdateTopic(id string, r models.Topic) (models.Topic, error) {
 	var t models.Topic
 	stmt := `UPDATE topics SET `
-	if t.Name != "" {
-		stmt += `name = '` + t.Name + `', `
+	if r.Name != "" {
+		stmt += `name = '` + r.Name + `', `
 	} else {
 		stmt += `name = name, `
 	}
-	if t.SupTopic.UUID.String() != "" {
+	if t.SupTopic.Valid {
 		stmt += `sup_topic = '` + t.SupTopic.UUID.String() + `', `
 	} else {
 		stmt += `sup_topic = sup_topic, `
 	}
-	stmt += `adult_content = ` + strconv.FormatBool(t.AdultContent) + `, updated_at = NOW() WHERE topic_id = '` + id + `' RETURNING *`
+	stmt += `adult_content = ` + strconv.FormatBool(r.AdultContent) + `, updated_at = NOW() WHERE topic_id = '` + id + `' RETURNING *`
 	err := m.DB.QueryRow(stmt).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
+	return t, err
+}
+
+// DeleteSubreddit deleters the subreddit from the database
+func (m *postgresDBRepo) DeleteTopic(id string) (models.Topic, error) {
+	var t models.Topic
+	stmt := `DELETE FROM topics  WHERE topic_id = '` + id + `' RETURNING *`
+	err := m.DB.QueryRow(stmt).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
+	if err != nil {
+		return t, err
+	}
 	return t, err
 }

@@ -10,12 +10,12 @@ import (
 )
 
 func (m *Repository) GetSubredditsList(w http.ResponseWriter, r *http.Request) {
-	users, error := m.DB.GetSubreddits()
+	subreddits, error := m.DB.GetSubreddits()
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(subreddits)
 }
 
 func (m *Repository) GetSubredditById(w http.ResponseWriter, r *http.Request) {

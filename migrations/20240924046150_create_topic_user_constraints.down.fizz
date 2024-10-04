@@ -1,0 +1,4 @@
+drop_index("topics_users", "topics_users_topic_id_user_id_idx")
+
+drop_foreign_key("topics_users", "topics_users_topics_topic_id_fk", {})
+drop_foreign_key("topics_users", "topics_users_users_user_id_fk", {})

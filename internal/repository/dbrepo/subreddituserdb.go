@@ -111,7 +111,7 @@ func (m *postgresDBRepo) UpdateSubredditUser(id string, r models.SubredditUser) 
 	if r.Role != "" {
 		stmt += `role = '` + r.Role + `', `
 	} else {
-		return su, errors.New("There is no role")
+		return su, errors.New("there is no role")
 	}
 	stmt += `updated_at = NOW() WHERE subreddit_user_id = '` + id + `' RETURNING *`
 	err := m.DB.QueryRow(stmt).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)

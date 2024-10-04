@@ -15,7 +15,7 @@ type DatabaseRepo interface {
 	GetSubreddits() ([]models.Subreddit, error)
 	GetSubredditById(id string) (models.Subreddit, error)
 	GetSubredditByUserId(id string) ([]models.Subreddit, error)
-	InsertSubreddit(res models.Subreddit) (models.Subreddit, error)
+	InsertSubreddit(r models.Subreddit) (models.Subreddit, error)
 	UpdateSubreddit(id string, r models.Subreddit) (models.Subreddit, error)
 	DeleteSubreddit(id string) (models.Subreddit, error)
 
@@ -23,15 +23,21 @@ type DatabaseRepo interface {
 	GetSubredditUserById(id string) (models.SubredditUser, error)
 	GetSubredditMembers(id string) ([]models.User, error) //SubredditId
 	GetSubredditMembersByRole(id string, role string) ([]models.User, error)
-	InsertSubredditUser(res models.SubredditUser) (models.SubredditUser, error)
+	InsertSubredditUser(r models.SubredditUser) (models.SubredditUser, error)
 	UpdateSubredditUser(id string, r models.SubredditUser) (models.SubredditUser, error)
 	DeleteSubredditUser(id string) (models.SubredditUser, error)
 
 	GetTopics() ([]models.Topic, error)
 	GetTopicById(id string) (models.Topic, error)
 	GetSubTopics(id string) ([]models.Topic, error)
-	InsertTopic(res models.Topic) (models.Topic, error)
-	UpdateTopic(id string, res models.Topic) (models.Topic, error)
+	InsertTopic(r models.Topic) (models.Topic, error)
+	UpdateTopic(id string, r models.Topic) (models.Topic, error)
+	DeleteTopic(id string) (models.Topic, error)
+
+	GetTopicsUsers() ([]models.TopicUser, error)
+	GetTopicUsersById(id string) (models.TopicUser, error)
+	InsertTopicUser(r models.TopicUser) (models.TopicUser, error)
+	DeleteTopicUser(id string) (models.TopicUser, error)
 
 	InsertSubredditTopic(res models.SubredditTopic) (models.SubredditTopic, error)
 	InsertConfig(res models.Config) (models.Config, error)

@@ -1,0 +1,5 @@
+create_table("topics_users") {
+  t.Column("topic_user_id", "uuid", {"primary": true})
+  t.Column("topic_id", "uuid", {})
+  t.Column("user_id", "uuid", {})
+}

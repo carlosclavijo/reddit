@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -65,9 +66,21 @@ func (m *Repository) PutTopic(w http.ResponseWriter, r *http.Request) {
 	}
 	newTopic, error := m.DB.UpdateTopic(value, Topic)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newTopic)
+}
+
+func (m *Repository) DeleteTopic(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[2]
+	Topic, error := m.DB.DeleteTopic(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
+	//m.App.Session.Put(r.Context(), "user", User)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(Topic)
 }
