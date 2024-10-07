@@ -1,10 +1,10 @@
 package dbrepo
 
 import (
-	"errors"
 	"strconv"
 
 	"github.com/carlosclavijo/reddit/internal/models"
+	"github.com/gofrs/uuid"
 )
 
 // GetTopics get the list of all topics from the database
@@ -21,10 +21,6 @@ func (m *postgresDBRepo) GetTopics() ([]models.Topic, error) {
 		if err != nil {
 			return topics, err
 		}
-		t.User, err = m.GetUserById(t.UserId.String())
-		if err != nil {
-			return topics, err
-		}
 		topics = append(topics, t)
 	}
 	return topics, err
@@ -33,20 +29,21 @@ func (m *postgresDBRepo) GetTopics() ([]models.Topic, error) {
 // GetTopicById gets the topic with their uuid
 func (m *postgresDBRepo) GetTopicById(id string) (models.Topic, error) {
 	var t models.Topic
-	stmt := `SELECT * FROM topics WHERE topic_id = '` + id + `'`
-	err := m.DB.QueryRow(stmt).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
+	stmt := `SELECT * FROM topics WHERE topic_id = $1`
+	uid, _ := uuid.FromString(id)
+	err := m.DB.QueryRow(stmt, uid).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
 	if err != nil {
 		return t, err
 	}
-	t.User, err = m.GetUserById(t.UserId.String())
 	return t, err
 }
 
 // GetSubTopics get the list of all subtopics from the database
 func (m *postgresDBRepo) GetSubTopics(id string) ([]models.Topic, error) {
 	var topics []models.Topic
-	stmt := `SELECT * FROM topics WHERE sup_topic = '` + id + `'`
-	rows, err := m.DB.Query(stmt)
+	stmt := `SELECT * FROM topics WHERE sup_topic = $1`
+	uid, _ := uuid.FromString(id)
+	rows, err := m.DB.Query(stmt, uid)
 	if err != nil {
 		return topics, err
 	}
@@ -56,7 +53,22 @@ func (m *postgresDBRepo) GetSubTopics(id string) ([]models.Topic, error) {
 		if err != nil {
 			return topics, err
 		}
-		t.User, err = m.GetUserById(t.UserId.String())
+		topics = append(topics, t)
+	}
+	return topics, err
+}
+
+// GetParentsTopics gets the list of all topics without parent topics
+func (m *postgresDBRepo) GetParentsTopics() ([]models.Topic, error) {
+	var topics []models.Topic
+	stmt := `SELECT * FROM topics WHERE sup_topic IS NULL`
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return topics, err
+	}
+	for rows.Next() {
+		var t models.Topic
+		err = rows.Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
 		if err != nil {
 			return topics, err
 		}
@@ -68,13 +80,6 @@ func (m *postgresDBRepo) GetSubTopics(id string) ([]models.Topic, error) {
 // InsertTopic inserts topics into the database
 func (m *postgresDBRepo) InsertTopic(r models.Topic) (models.Topic, error) {
 	var t models.Topic
-	user, err := m.GetUserById(r.UserId.String())
-	if err != nil {
-		return t, err
-	}
-	if !user.Admin {
-		return t, errors.New("you can't add a topic because you're not an admin")
-	}
 	stmt := `INSERT INTO topics(user_id, name`
 	if r.SupTopic.Valid {
 		stmt += `, sup_topic, adult_content) VALUES($1, $2, $3, $4) RETURNING *`
@@ -82,11 +87,7 @@ func (m *postgresDBRepo) InsertTopic(r models.Topic) (models.Topic, error) {
 		return t, err
 	}
 	stmt += `, adult_content) VALUES($1, $2, $3) RETURNING *`
-	err = m.DB.QueryRow(stmt, r.UserId, r.Name, r.AdultContent).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
-	if err != nil {
-		return t, err
-	}
-	t.User, err = m.GetUserById(r.UserId.String())
+	err := m.DB.QueryRow(stmt, r.UserId, r.Name, r.AdultContent).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
 	return t, err
 }
 
@@ -104,16 +105,18 @@ func (m *postgresDBRepo) UpdateTopic(id string, r models.Topic) (models.Topic, e
 	} else {
 		stmt += `sup_topic = sup_topic, `
 	}
-	stmt += `adult_content = ` + strconv.FormatBool(r.AdultContent) + `, updated_at = NOW() WHERE topic_id = '` + id + `' RETURNING *`
-	err := m.DB.QueryRow(stmt).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
+	stmt += `adult_content = ` + strconv.FormatBool(r.AdultContent) + `, updated_at = NOW() WHERE topic_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(id)
+	err := m.DB.QueryRow(stmt, uid).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
 	return t, err
 }
 
 // DeleteSubreddit deleters the subreddit from the database
 func (m *postgresDBRepo) DeleteTopic(id string) (models.Topic, error) {
 	var t models.Topic
-	stmt := `DELETE FROM topics  WHERE topic_id = '` + id + `' RETURNING *`
-	err := m.DB.QueryRow(stmt).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
+	stmt := `DELETE FROM topics  WHERE topic_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(id)
+	err := m.DB.QueryRow(stmt, uid).Scan(&t.TopicId, &t.UserId, &t.Name, &t.SupTopic, &t.AdultContent, &t.CreatedAt, &t.UpdatedAt)
 	if err != nil {
 		return t, err
 	}

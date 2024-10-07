@@ -12,6 +12,19 @@ type DatabaseRepo interface {
 	AdminUser(id string) (models.User, error)
 	DeleteUser(id string) (models.User, error)
 
+	GetTopics() ([]models.Topic, error)
+	GetTopicById(id string) (models.Topic, error)
+	GetSubTopics(id string) ([]models.Topic, error)
+	GetParentsTopics() ([]models.Topic, error)
+	InsertTopic(r models.Topic) (models.Topic, error)
+	UpdateTopic(id string, r models.Topic) (models.Topic, error)
+	DeleteTopic(id string) (models.Topic, error)
+
+	GetTopicsUsers() ([]models.TopicUser, error)
+	GetTopicUsersById(id string) (models.TopicUser, error)
+	InsertTopicUser(r models.TopicUser) (models.TopicUser, error)
+	DeleteTopicUser(id string) (models.TopicUser, error)
+
 	GetSubreddits() ([]models.Subreddit, error)
 	GetSubredditById(id string) (models.Subreddit, error)
 	GetSubredditByUserId(id string) ([]models.Subreddit, error)
@@ -26,18 +39,6 @@ type DatabaseRepo interface {
 	InsertSubredditUser(r models.SubredditUser) (models.SubredditUser, error)
 	UpdateSubredditUser(id string, r models.SubredditUser) (models.SubredditUser, error)
 	DeleteSubredditUser(id string) (models.SubredditUser, error)
-
-	GetTopics() ([]models.Topic, error)
-	GetTopicById(id string) (models.Topic, error)
-	GetSubTopics(id string) ([]models.Topic, error)
-	InsertTopic(r models.Topic) (models.Topic, error)
-	UpdateTopic(id string, r models.Topic) (models.Topic, error)
-	DeleteTopic(id string) (models.Topic, error)
-
-	GetTopicsUsers() ([]models.TopicUser, error)
-	GetTopicUsersById(id string) (models.TopicUser, error)
-	InsertTopicUser(r models.TopicUser) (models.TopicUser, error)
-	DeleteTopicUser(id string) (models.TopicUser, error)
 
 	InsertSubredditTopic(res models.SubredditTopic) (models.SubredditTopic, error)
 	InsertConfig(res models.Config) (models.Config, error)

@@ -27,6 +27,19 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Patch("/users/admin/{userId}", handlers.Repo.PatchAdmin)
 	mux.Delete("/users/{userId}", handlers.Repo.DeleteUser)
 
+	mux.Get("/topics", handlers.Repo.GetTopicsList)
+	mux.Get("/topics/{topicId}", handlers.Repo.GetTopicById)
+	mux.Get("/topics/sub/{topicId}", handlers.Repo.GetSubtopics)
+	mux.Get("/topics/parents", handlers.Repo.GetParentsTopicsList)
+	mux.Post("/topics", handlers.Repo.PostTopic)
+	mux.Put("/topics/{topicId}", handlers.Repo.PutTopic)
+	mux.Delete("/topics/{topicId}", handlers.Repo.DeleteTopic)
+
+	mux.Get("/topicsusers", handlers.Repo.GetTopicsUsersList)
+	mux.Get("/topicsusers/{topicId}", handlers.Repo.GetTopicUserById)
+	mux.Post("/topicsusers", handlers.Repo.PostTopicUser)
+	mux.Delete("/topicsusers/{topicUserId}", handlers.Repo.DeleteTopicUser)
+
 	mux.Get("/subreddits", handlers.Repo.GetSubredditsList)
 	mux.Get("/subreddits/users/{subredditId}", handlers.Repo.GetSubredditByUserId)
 	mux.Get("/subreddits/{subredditId}", handlers.Repo.GetSubredditById)
@@ -41,18 +54,6 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Post("/subredditusers", handlers.Repo.PostSubredditUser)
 	mux.Put("/subredditusers/{subredditUserId}", handlers.Repo.PutSubredditUser)
 	mux.Delete("/subredditusers/{subredditUserId}", handlers.Repo.DeleteSubredditUser)
-
-	mux.Get("/topics", handlers.Repo.GetTopicsList)
-	mux.Get("/topics/{topicId}", handlers.Repo.GetTopicById)
-	mux.Get("/topics/sub/{topicId}", handlers.Repo.GetSubtopics)
-	mux.Post("/topics", handlers.Repo.PostTopic)
-	mux.Put("/topics/{topicId}", handlers.Repo.PutTopic)
-	mux.Delete("/topics/{topicId}", handlers.Repo.DeleteTopic)
-
-	mux.Get("/topicsusers", handlers.Repo.GetTopicsUsersList)
-	mux.Get("/topicsusers/{topicId}", handlers.Repo.GetTopicUserById)
-	mux.Post("/topicsusers", handlers.Repo.PostTopicUser)
-	mux.Delete("/topicsusers/{topicUserId}", handlers.Repo.DeleteTopicUser)
 
 	mux.Post("/subreddittopics", handlers.Repo.PostSubedditTopic)
 	mux.Post("/configs", handlers.Repo.PostConfig)

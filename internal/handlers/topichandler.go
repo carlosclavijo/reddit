@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -15,6 +15,12 @@ func (m *Repository) GetTopicsList(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
+	for i := 0; i < len(topics); i++ {
+		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
+		if error != nil {
+			helpers.ServerError(w, error)
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
 }
@@ -22,6 +28,10 @@ func (m *Repository) GetTopicsList(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) GetTopicById(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[2]
 	topic, error := m.DB.GetTopicById(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
+	topic.User, error = m.DB.GetUserById(topic.UserId.String())
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
@@ -35,6 +45,27 @@ func (m *Repository) GetSubtopics(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
+	for i := 0; i < len(topics); i++ {
+		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
+		if error != nil {
+			helpers.ServerError(w, error)
+		}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(topics)
+}
+
+func (m *Repository) GetParentsTopicsList(w http.ResponseWriter, r *http.Request) {
+	topics, error := m.DB.GetParentsTopics()
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
+	for i := 0; i < len(topics); i++ {
+		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
+		if error != nil {
+			helpers.ServerError(w, error)
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
 }
@@ -47,7 +78,20 @@ func (m *Repository) PostTopic(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
+	user, err := m.DB.GetUserById(Topic.UserId.String())
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	if !user.Admin {
+		helpers.ServerError(w, errors.New("you can't add a topic because you're not an admin"))
+		return
+	}
 	newTopic, error := m.DB.InsertTopic(Topic)
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
+	newTopic.User, error = m.DB.GetUserById(Topic.UserId.String())
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
@@ -66,7 +110,10 @@ func (m *Repository) PutTopic(w http.ResponseWriter, r *http.Request) {
 	}
 	newTopic, error := m.DB.UpdateTopic(value, Topic)
 	if error != nil {
-		log.Println(error)
+		helpers.ServerError(w, error)
+	}
+	newTopic.User, error = m.DB.GetUserById(newTopic.UserId.String())
+	if error != nil {
 		helpers.ServerError(w, error)
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
@@ -77,6 +124,10 @@ func (m *Repository) PutTopic(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) DeleteTopic(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[2]
 	Topic, error := m.DB.DeleteTopic(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
+	Topic.User, error = m.DB.GetUserById(Topic.UserId.String())
 	if error != nil {
 		helpers.ServerError(w, error)
 	}

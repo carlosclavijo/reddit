@@ -104,6 +104,13 @@ func (m *postgresDBRepo) InsertSubredditUser(r models.SubredditUser) (models.Sub
 	return su, err
 }
 
+// CreateSubredditUser inserts subreddit users relation when someone creates a new subreddit
+/*func (m *postgresDBRepo) CreateSubredditUser(userId string, subredditId string) (models.SubredditUser, error) {
+	var su models.SubredditUser
+	stmt := `INSERT INTO subreddits_users(subreddit_id, user_id, role) VALUES($1, $2, 'admin') RETURNING *`
+	err := m.DB.QueryRow(stmt)
+}*/
+
 // UpdateSubredditUser updates subreddituser information
 func (m *postgresDBRepo) UpdateSubredditUser(id string, r models.SubredditUser) (models.SubredditUser, error) {
 	var su models.SubredditUser

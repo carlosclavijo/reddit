@@ -50,6 +50,10 @@ func (m *Repository) PostSubeddit(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
+	newSubreddit.User, error = m.DB.GetUserById(newSubreddit.CreatedBy.String())
+	if error != nil {
+		helpers.ServerError(w, error)
+	}
 	m.App.Session.Put(r.Context(), "subreddit", Subreddit)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newSubreddit)

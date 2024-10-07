@@ -2,6 +2,7 @@ package dbrepo
 
 import (
 	"github.com/carlosclavijo/reddit/internal/models"
+	"github.com/gofrs/uuid"
 )
 
 // GetTopicUsers get the list of all topicsusers from the database
@@ -18,14 +19,6 @@ func (m *postgresDBRepo) GetTopicsUsers() ([]models.TopicUser, error) {
 		if err != nil {
 			return topicsusers, err
 		}
-		tu.Topic, err = m.GetTopicById(tu.TopicId.String())
-		if err != nil {
-			return topicsusers, err
-		}
-		tu.User, err = m.GetUserById(tu.UserId.String())
-		if err != nil {
-			return topicsusers, err
-		}
 		topicsusers = append(topicsusers, tu)
 	}
 	return topicsusers, err
@@ -34,16 +27,12 @@ func (m *postgresDBRepo) GetTopicsUsers() ([]models.TopicUser, error) {
 // GetTopicById gets the topic with their uuid
 func (m *postgresDBRepo) GetTopicUsersById(id string) (models.TopicUser, error) {
 	var tu models.TopicUser
-	stmt := `SELECT * FROM topics_users WHERE topic_user_id = '` + id + `'`
-	err := m.DB.QueryRow(stmt).Scan(&tu.TopicUserId, &tu.TopicId, &tu.UserId, &tu.CreatedAt, &tu.UpdatedAt)
+	stmt := `SELECT * FROM topics_users WHERE topic_user_id = $1`
+	uid, _ := uuid.FromString(id)
+	err := m.DB.QueryRow(stmt, uid).Scan(&tu.TopicUserId, &tu.TopicId, &tu.UserId, &tu.CreatedAt, &tu.UpdatedAt)
 	if err != nil {
 		return tu, err
 	}
-	tu.Topic, err = m.GetTopicById(tu.TopicId.String())
-	if err != nil {
-		return tu, err
-	}
-	tu.User, err = m.GetUserById(tu.UserId.String())
 	return tu, err
 }
 
@@ -52,22 +41,15 @@ func (m *postgresDBRepo) InsertTopicUser(r models.TopicUser) (models.TopicUser, 
 	var tu models.TopicUser
 	stmt := `INSERT INTO topics_users (topic_id, user_id) VALUES($1, $2) RETURNING *`
 	err := m.DB.QueryRow(stmt, r.TopicId, r.UserId).Scan(&tu.TopicUserId, &tu.TopicId, &tu.UserId, &tu.CreatedAt, &tu.UpdatedAt)
-	if err != nil {
-		return tu, err
-	}
-	tu.Topic, err = m.GetTopicById(tu.TopicId.String())
-	if err != nil {
-		return tu, err
-	}
-	tu.User, err = m.GetUserById(r.UserId.String())
 	return tu, err
 }
 
 // DeleteTopicUser deletes the topicusers relation from the database
 func (m *postgresDBRepo) DeleteTopicUser(id string) (models.TopicUser, error) {
 	var tu models.TopicUser
-	stmt := `DELETE FROM topics_users  WHERE topic_user_id = '` + id + `' RETURNING *`
-	err := m.DB.QueryRow(stmt).Scan(&tu.TopicUserId, &tu.TopicId, &tu.UserId, &tu.CreatedAt, &tu.UpdatedAt)
+	stmt := `DELETE FROM topics_users  WHERE topic_user_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(id)
+	err := m.DB.QueryRow(stmt, uid).Scan(&tu.TopicUserId, &tu.TopicId, &tu.UserId, &tu.CreatedAt, &tu.UpdatedAt)
 	if err != nil {
 		return tu, err
 	}

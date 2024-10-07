@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -15,9 +16,9 @@ func (m *Repository) GetUsersList(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 	//w.Header().Set("Access-Control-Allow-Methods”, "GET, POST, OPTIONS”)
-	w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept")
+	//w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept")
 	json.NewEncoder(w).Encode(users)
 }
 
@@ -25,6 +26,7 @@ func (m *Repository) GetUserById(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[2]
 	user, error := m.DB.GetUserById(value)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
 	}
 	w.Header().Set("Content-Type", "application/json")
