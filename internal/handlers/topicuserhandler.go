@@ -13,11 +13,13 @@ func (m *Repository) GetTopicsUsersList(w http.ResponseWriter, r *http.Request) 
 	topicsUsers, error := m.DB.GetTopicsUsers()
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	for i := 0; i < len(topicsUsers); i++ {
 		error = m.GetTopicsAndUsers(&topicsUsers[i])
 		if error != nil {
 			helpers.ServerError(w, error)
+			return
 		}
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -29,13 +31,44 @@ func (m *Repository) GetTopicUserById(w http.ResponseWriter, r *http.Request) {
 	topicUser, error := m.DB.GetTopicUsersById(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	error = m.GetTopicsAndUsers(&topicUser)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topicUser)
+}
+
+func (m *Repository) GetTopicsByUser(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[3]
+	topics, error := m.DB.GetTopicsByUserId(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	for i := 0; i < len(topics); i++ {
+		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
+		if error != nil {
+			helpers.ServerError(w, error)
+			return
+		}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(topics)
+}
+
+func (m *Repository) GetUsersByTopic(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[3]
+	users, error := m.DB.GetUsersByTopicId(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
 }
 
 func (m *Repository) PostTopicUser(w http.ResponseWriter, r *http.Request) {
@@ -49,10 +82,12 @@ func (m *Repository) PostTopicUser(w http.ResponseWriter, r *http.Request) {
 	newTopicUser, error := m.DB.InsertTopicUser(TopicUser)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	error = m.GetTopicsAndUsers(&newTopicUser)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "topic", Topic)
 	w.Header().Set("Content-Type", "application/json")
@@ -64,10 +99,17 @@ func (m *Repository) DeleteTopicUser(w http.ResponseWriter, r *http.Request) {
 	TopicUser, error := m.DB.DeleteTopicUser(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	error = m.GetTopicsAndUsers(&TopicUser)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	error = m.GetTopicsAndUsers(&TopicUser)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")

@@ -22,6 +22,8 @@ type DatabaseRepo interface {
 
 	GetTopicsUsers() ([]models.TopicUser, error)
 	GetTopicUsersById(id string) (models.TopicUser, error)
+	GetTopicsByUserId(id string) ([]models.Topic, error)
+	GetUsersByTopicId(id string) ([]models.User, error)
 	InsertTopicUser(r models.TopicUser) (models.TopicUser, error)
 	DeleteTopicUser(id string) (models.TopicUser, error)
 

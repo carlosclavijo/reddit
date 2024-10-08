@@ -13,6 +13,14 @@ func (m *Repository) GetSubredditsList(w http.ResponseWriter, r *http.Request) {
 	subreddits, error := m.DB.GetSubreddits()
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	for i := 0; i < len(subreddits); i++ {
+		subreddits[i].User, error = m.DB.GetUserById(subreddits[i].CreatedBy.String())
+		if error != nil {
+			helpers.ServerError(w, error)
+			return
+		}
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subreddits)
@@ -23,6 +31,12 @@ func (m *Repository) GetSubredditById(w http.ResponseWriter, r *http.Request) {
 	subreddit, error := m.DB.GetSubredditById(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	subreddit.User, error = m.DB.GetUserById(subreddit.CreatedBy.String())
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subreddit)
@@ -30,12 +44,20 @@ func (m *Repository) GetSubredditById(w http.ResponseWriter, r *http.Request) {
 
 func (m *Repository) GetSubredditByUserId(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[3]
-	users, error := m.DB.GetSubredditByUserId(value)
+	subreddits, error := m.DB.GetSubredditByUserId(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	for i := 0; i < len(subreddits); i++ {
+		subreddits[i].User, error = m.DB.GetUserById(subreddits[i].CreatedBy.String())
+		if error != nil {
+			helpers.ServerError(w, error)
+			return
+		}
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(subreddits)
 }
 
 func (m *Repository) PostSubeddit(w http.ResponseWriter, r *http.Request) {
@@ -49,12 +71,14 @@ func (m *Repository) PostSubeddit(w http.ResponseWriter, r *http.Request) {
 	newSubreddit, error := m.DB.InsertSubreddit(Subreddit)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	newSubreddit.User, error = m.DB.GetUserById(newSubreddit.CreatedBy.String())
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
-	m.App.Session.Put(r.Context(), "subreddit", Subreddit)
+	//m.App.Session.Put(r.Context(), "subreddit", Subreddit)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newSubreddit)
 }
@@ -70,6 +94,12 @@ func (m *Repository) PutSubreddit(w http.ResponseWriter, r *http.Request) {
 	newSubreddit, error := m.DB.UpdateSubreddit(value, Subreddit)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	newSubreddit.User, error = m.DB.GetUserById(newSubreddit.CreatedBy.String())
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
@@ -81,6 +111,12 @@ func (m *Repository) DeleteSubreddit(w http.ResponseWriter, r *http.Request) {
 	Subreddit, error := m.DB.DeleteSubreddit(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	Subreddit.User, error = m.DB.GetUserById(Subreddit.CreatedBy.String())
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")

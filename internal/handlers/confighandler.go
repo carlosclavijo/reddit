@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/carlosclavijo/reddit/internal/helpers"
@@ -19,11 +18,10 @@ func (m *Repository) PostConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	newConfig, error := m.DB.InsertConfig(Config)
 	if error != nil {
-		log.Println(error)
 		helpers.ServerError(w, error)
 		return
 	}
-	m.App.Session.Put(r.Context(), "config", Config)
+	//m.App.Session.Put(r.Context(), "config", Config)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newConfig)
 }

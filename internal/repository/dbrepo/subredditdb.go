@@ -1,26 +1,27 @@
 package dbrepo
 
 import (
+	"context"
 	"strconv"
+	"time"
 
 	"github.com/carlosclavijo/reddit/internal/models"
+	"github.com/gofrs/uuid"
 )
 
 // GetReddits get the list of all reddits from the database
 func (m *postgresDBRepo) GetSubreddits() ([]models.Subreddit, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var subreddits []models.Subreddit
 	stmt := `SELECT * FROM subreddits`
-	rows, err := m.DB.Query(stmt)
+	rows, err := m.DB.QueryContext(ctx, stmt)
 	if err != nil {
 		return subreddits, err
 	}
 	for rows.Next() {
 		var s models.Subreddit
 		err = rows.Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
-		if err != nil {
-			return subreddits, err
-		}
-		s.User, err = m.GetUserById(s.CreatedBy.String())
 		if err != nil {
 			return subreddits, err
 		}
@@ -31,21 +32,22 @@ func (m *postgresDBRepo) GetSubreddits() ([]models.Subreddit, error) {
 
 // GetSubredditById gets the subreddit with their uuid
 func (m *postgresDBRepo) GetSubredditById(id string) (models.Subreddit, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var s models.Subreddit
-	stmt := `SELECT * FROM subreddits WHERE subreddit_id = '` + id + `'`
-	err := m.DB.QueryRow(stmt).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
-	if err != nil {
-		return s, err
-	}
-	s.User, err = m.GetUserById(s.CreatedBy.String())
+	stmt := `SELECT * FROM subreddits WHERE subreddit_id = $1`
+	uid, _ := uuid.FromString(id)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
 	return s, err
 }
 
 // GetSubredditByUserId gets all the subreddits created by userId
 func (m *postgresDBRepo) GetSubredditByUserId(id string) ([]models.Subreddit, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var subreddits []models.Subreddit
 	stmt := `SELECT * FROM subreddits WHERE created_by = '` + id + `'`
-	rows, err := m.DB.Query(stmt)
+	rows, err := m.DB.QueryContext(ctx, stmt)
 	if err != nil {
 		return subreddits, err
 	}
@@ -55,7 +57,6 @@ func (m *postgresDBRepo) GetSubredditByUserId(id string) ([]models.Subreddit, er
 		if err != nil {
 			return subreddits, err
 		}
-		s.User, err = m.GetUserById(s.CreatedBy.String())
 		subreddits = append(subreddits, s)
 	}
 	return subreddits, err
@@ -63,32 +64,32 @@ func (m *postgresDBRepo) GetSubredditByUserId(id string) ([]models.Subreddit, er
 
 // InsertSubreddit inserts subreddits into the database
 func (m *postgresDBRepo) InsertSubreddit(r models.Subreddit) (models.Subreddit, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var s models.Subreddit
 	stmt := `INSERT INTO subreddits(name, description, created_by, privacy, is_mature`
 	if r.Icon.Valid && r.Banner.Valid {
 		stmt += `, icon, banner) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`
-		err := m.DB.QueryRow(stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature, r.Icon, r.Banner).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
+		err := m.DB.QueryRowContext(ctx, stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature, r.Icon, r.Banner).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
 		return s, err
 	} else if r.Icon.Valid {
 		stmt += `, icon) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`
-		err := m.DB.QueryRow(stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature, r.Icon).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
+		err := m.DB.QueryRowContext(ctx, stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature, r.Icon).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
 		return s, err
 	} else if r.Banner.Valid {
 		stmt += `, banner) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`
-		err := m.DB.QueryRow(stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature, r.Banner).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
+		err := m.DB.QueryRowContext(ctx, stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature, r.Banner).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
 		return s, err
 	}
 	stmt += `) VALUES($1, $2, $3, $4, $5) RETURNING *`
-	err := m.DB.QueryRow(stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
-	if err != nil {
-		return s, err
-	}
-	s.User, err = m.GetUserById(r.CreatedBy.String())
+	err := m.DB.QueryRowContext(ctx, stmt, r.Name, r.Description, r.CreatedBy, r.Privacy, r.IsMature).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
 	return s, err
 }
 
 // UpdateSubreddit updates subreddit information
 func (m *postgresDBRepo) UpdateSubreddit(id string, r models.Subreddit) (models.Subreddit, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var s models.Subreddit
 	stmt := `UPDATE subreddits SET `
 	if r.Name != "" {
@@ -121,18 +122,16 @@ func (m *postgresDBRepo) UpdateSubreddit(id string, r models.Subreddit) (models.
 		stmt += `privacy = privacy, `
 	}
 	stmt += `is_mature = ` + strconv.FormatBool(r.IsMature) + `, updated_at = NOW() WHERE subreddit_id = '` + id + `' RETURNING *`
-	err := m.DB.QueryRow(stmt).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
+	err := m.DB.QueryRowContext(ctx, stmt).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
 	return s, err
 }
 
 // DeleteSubreddit deleters the subreddit from the database
 func (m *postgresDBRepo) DeleteSubreddit(id string) (models.Subreddit, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var s models.Subreddit
 	stmt := `DELETE FROM subreddits  WHERE subreddit_id = '` + id + `' RETURNING *`
-	err := m.DB.QueryRow(stmt).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
-	if err != nil {
-		return s, err
-	}
-	s.User, err = m.GetUserById(s.CreatedBy.String())
+	err := m.DB.QueryRowContext(ctx, stmt).Scan(&s.SubredditId, &s.Name, &s.Description, &s.CreatedBy, &s.Icon, &s.Banner, &s.Privacy, &s.IsMature, &s.CreatedAt, &s.UpdatedAt)
 	return s, err
 }

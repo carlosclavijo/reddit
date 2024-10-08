@@ -37,6 +37,8 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Get("/topicsusers", handlers.Repo.GetTopicsUsersList)
 	mux.Get("/topicsusers/{topicId}", handlers.Repo.GetTopicUserById)
+	mux.Get("/topicsusers/topics/{userId}", handlers.Repo.GetTopicsByUser)
+	mux.Get("/topicsusers/users/{topicId}", handlers.Repo.GetUsersByTopic)
 	mux.Post("/topicsusers", handlers.Repo.PostTopicUser)
 	mux.Delete("/topicsusers/{topicUserId}", handlers.Repo.DeleteTopicUser)
 

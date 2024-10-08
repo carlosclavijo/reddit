@@ -19,6 +19,7 @@ func (m *Repository) GetTopicsList(w http.ResponseWriter, r *http.Request) {
 		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
 		if error != nil {
 			helpers.ServerError(w, error)
+			return
 		}
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -30,10 +31,12 @@ func (m *Repository) GetTopicById(w http.ResponseWriter, r *http.Request) {
 	topic, error := m.DB.GetTopicById(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	topic.User, error = m.DB.GetUserById(topic.UserId.String())
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topic)
@@ -44,11 +47,13 @@ func (m *Repository) GetSubtopics(w http.ResponseWriter, r *http.Request) {
 	topics, error := m.DB.GetSubTopics(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	for i := 0; i < len(topics); i++ {
 		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
 		if error != nil {
 			helpers.ServerError(w, error)
+			return
 		}
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -59,11 +64,13 @@ func (m *Repository) GetParentsTopicsList(w http.ResponseWriter, r *http.Request
 	topics, error := m.DB.GetParentsTopics()
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	for i := 0; i < len(topics); i++ {
 		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
 		if error != nil {
 			helpers.ServerError(w, error)
+			return
 		}
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -90,10 +97,12 @@ func (m *Repository) PostTopic(w http.ResponseWriter, r *http.Request) {
 	newTopic, error := m.DB.InsertTopic(Topic)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	newTopic.User, error = m.DB.GetUserById(Topic.UserId.String())
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "topic", Topic)
 	w.Header().Set("Content-Type", "application/json")
@@ -111,6 +120,7 @@ func (m *Repository) PutTopic(w http.ResponseWriter, r *http.Request) {
 	newTopic, error := m.DB.UpdateTopic(value, Topic)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	newTopic.User, error = m.DB.GetUserById(newTopic.UserId.String())
 	if error != nil {
@@ -126,10 +136,12 @@ func (m *Repository) DeleteTopic(w http.ResponseWriter, r *http.Request) {
 	Topic, error := m.DB.DeleteTopic(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	Topic.User, error = m.DB.GetUserById(Topic.UserId.String())
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")

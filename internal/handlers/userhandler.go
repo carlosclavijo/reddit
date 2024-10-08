@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -14,6 +13,7 @@ func (m *Repository) GetUsersList(w http.ResponseWriter, r *http.Request) {
 	users, error := m.DB.GetUsers()
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	//w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -26,8 +26,8 @@ func (m *Repository) GetUserById(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[2]
 	user, error := m.DB.GetUserById(value)
 	if error != nil {
-		log.Println(error)
 		helpers.ServerError(w, error)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
@@ -60,6 +60,7 @@ func (m *Repository) PutUser(w http.ResponseWriter, r *http.Request) {
 	newUser, error := m.DB.UpdateUser(value, User)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
@@ -71,6 +72,7 @@ func (m *Repository) PatchPostKarma(w http.ResponseWriter, r *http.Request) {
 	User, error := m.DB.AddUserPostKarma(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
@@ -82,6 +84,7 @@ func (m *Repository) PatchCommentKarma(w http.ResponseWriter, r *http.Request) {
 	User, error := m.DB.AddUserCommentKarma(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
@@ -93,6 +96,7 @@ func (m *Repository) PatchAdmin(w http.ResponseWriter, r *http.Request) {
 	User, error := m.DB.AdminUser(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
@@ -104,6 +108,7 @@ func (m *Repository) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	User, error := m.DB.DeleteUser(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
