@@ -19,6 +19,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/", handlers.Repo.HelloWorld)
 
 	mux.Get("/users", handlers.Repo.GetUsersList)
+	mux.Get("/users/admins", handlers.Repo.GetUsersAdminList)
 	mux.Get("/users/{userId}", handlers.Repo.GetUserById)
 	mux.Post("/users", handlers.Repo.PostUser)
 	mux.Put("/users/{userId}", handlers.Repo.PutUser)
@@ -31,6 +32,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/topics/{topicId}", handlers.Repo.GetTopicById)
 	mux.Get("/topics/sub/{topicId}", handlers.Repo.GetSubtopics)
 	mux.Get("/topics/parents", handlers.Repo.GetParentsTopicsList)
+	mux.Get("/topics/creator/{userId}", handlers.Repo.GetTopicsByCreatorId)
 	mux.Post("/topics", handlers.Repo.PostTopic)
 	mux.Put("/topics/{topicId}", handlers.Repo.PutTopic)
 	mux.Delete("/topics/{topicId}", handlers.Repo.DeleteTopic)
@@ -49,16 +51,23 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Put("/subreddits/{subredditId}", handlers.Repo.PutSubreddit)
 	mux.Delete("/subreddits/{subredditId}", handlers.Repo.DeleteSubreddit)
 
+	mux.Get("/configs", handlers.Repo.GetConfigsList)
+	mux.Get("/configs/{configId}", handlers.Repo.GetConfigById)
+	mux.Post("/configs", handlers.Repo.PostConfig)
+	mux.Put("/configs/{configId}", handlers.Repo.PutConfig)
+	mux.Delete("/configs/{cofigId}", handlers.Repo.DeleteConfig)
+
 	mux.Get("/subredditsusers", handlers.Repo.GetSubredditsUsersList)
 	mux.Get("/subredditsusers/{subredditUserId}", handlers.Repo.GetSubredditUserById)
 	mux.Get("/subredditsusers/members/{subredditId}", handlers.Repo.GetSubredditMembers)
 	mux.Get("/subredditsusers/members/{role}/{subredditId}", handlers.Repo.GetSubredditMembersByRole)
-	mux.Post("/subredditusers", handlers.Repo.PostSubredditUser)
+	mux.Post("/subredditsusers", handlers.Repo.PostSubredditUser)
 	mux.Put("/subredditusers/{subredditUserId}", handlers.Repo.PutSubredditUser)
 	mux.Delete("/subredditusers/{subredditUserId}", handlers.Repo.DeleteSubredditUser)
 
+	mux.Get("/subreddittopics", handlers.Repo.GetSubredditsTopicsList)
 	mux.Post("/subreddittopics", handlers.Repo.PostSubedditTopic)
-	mux.Post("/configs", handlers.Repo.PostConfig)
+
 	mux.Post("/tags", handlers.Repo.PostTag)
 	mux.Post("/posts", handlers.Repo.PostPost)
 	mux.Post("/posttags", handlers.Repo.PostPostTag)

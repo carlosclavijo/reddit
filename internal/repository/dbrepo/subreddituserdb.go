@@ -1,16 +1,21 @@
 package dbrepo
 
 import (
+	"context"
 	"errors"
+	"time"
 
 	"github.com/carlosclavijo/reddit/internal/models"
+	"github.com/gofrs/uuid"
 )
 
 // GetSubredditsUsers get the list of all subreddit_users relations
 func (m *postgresDBRepo) GetSubredditsUsers() ([]models.SubredditUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var SubredditUsers []models.SubredditUser
 	stmt := `SELECT * FROM subreddits_users`
-	rows, err := m.DB.Query(stmt)
+	rows, err := m.DB.QueryContext(ctx, stmt)
 	if err != nil {
 		return SubredditUsers, err
 	}
@@ -20,40 +25,30 @@ func (m *postgresDBRepo) GetSubredditsUsers() ([]models.SubredditUser, error) {
 		if err != nil {
 			return SubredditUsers, err
 		}
-		su.User, err = m.GetUserById(su.UserId.String())
-		if err != nil {
-			return SubredditUsers, err
-		}
-		su.Subreddit, err = m.GetSubredditById(su.SubredditId.String())
-		if err != nil {
-			return SubredditUsers, err
-		}
 		SubredditUsers = append(SubredditUsers, su)
 	}
 	return SubredditUsers, err
 }
 
 // GetSubredditById gets the subreddit with their uuid
-func (m *postgresDBRepo) GetSubredditUserById(id string) (models.SubredditUser, error) {
+func (m *postgresDBRepo) GetSubredditUserById(subredditUserId string) (models.SubredditUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var su models.SubredditUser
-	stmt := `SELECT * FROM subreddits_users WHERE subreddit_user_id = '` + id + `'`
-	err := m.DB.QueryRow(stmt).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
-	if err != nil {
-		return su, err
-	}
-	su.User, err = m.GetUserById(su.UserId.String())
-	if err != nil {
-		return su, err
-	}
-	su.Subreddit, err = m.GetSubredditById(su.SubredditId.String())
+	stmt := `SELECT * FROM subreddits_users WHERE subreddit_user_id = $1`
+	uid, _ := uuid.FromString(subredditUserId)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
 	return su, err
 }
 
-func (m *postgresDBRepo) GetSubredditMembers(id string) ([]models.User, error) {
+// GetSubredditMembers returns all members of a subreddit
+func (m *postgresDBRepo) GetSubredditMembers(subredditUserId string) ([]models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var users []models.User
-	stmt := `SELECT U.* FROM users U JOIN subreddits_users SU ON U.user_id = SU.user_id JOIN subreddits S ON S.subreddit_id = SU.subreddit_id
-		WHERE SU.subreddit_id = '` + id + `'`
-	rows, err := m.DB.Query(stmt)
+	stmt := `SELECT U.* FROM users U JOIN subreddits_users SU ON U.user_id = SU.user_id JOIN subreddits S ON S.subreddit_id = SU.subreddit_id WHERE SU.subreddit_id = $1`
+	uid, _ := uuid.FromString(subredditUserId)
+	rows, err := m.DB.QueryContext(ctx, stmt, uid)
 	if err != nil {
 		return users, err
 	}
@@ -68,11 +63,13 @@ func (m *postgresDBRepo) GetSubredditMembers(id string) ([]models.User, error) {
 	return users, err
 }
 
-func (m *postgresDBRepo) GetSubredditMembersByRole(id string, role string) ([]models.User, error) {
+func (m *postgresDBRepo) GetSubredditMembersByRole(subredditUserId string, role string) ([]models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var users []models.User
-	stmt := `SELECT U.* FROM users U JOIN subreddits_users SU ON U.user_id = SU.user_id JOIN subreddits S ON S.subreddit_id = SU.subreddit_id
-		WHERE SU.subreddit_id = '` + id + `' AND role = '` + role + `'`
-	rows, err := m.DB.Query(stmt)
+	stmt := `SELECT U.* FROM users U JOIN subreddits_users SU ON U.user_id = SU.user_id JOIN subreddits S ON S.subreddit_id = SU.subreddit_id WHERE SU.subreddit_id = $1 AND role = $2`
+	uid, _ := uuid.FromString(subredditUserId)
+	rows, err := m.DB.QueryContext(ctx, stmt, uid, role)
 	if err != nil {
 		return users, err
 	}
@@ -89,54 +86,38 @@ func (m *postgresDBRepo) GetSubredditMembersByRole(id string, role string) ([]mo
 
 // InsertSubredditUser inserts subreddit users into the database
 func (m *postgresDBRepo) InsertSubredditUser(r models.SubredditUser) (models.SubredditUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var su models.SubredditUser
 	stmt := `INSERT INTO subreddits_users(subreddit_id, user_id, role) VALUES($1, $2, $3) RETURNING *`
-	err := m.DB.QueryRow(stmt, r.SubredditId, r.UserId, r.Role).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
-	if err != nil {
-		return su, err
-
-	}
-	su.Subreddit, err = m.GetSubredditById(r.SubredditId.String())
-	if err != nil {
-		return su, err
-	}
-	su.User, err = m.GetUserById(r.UserId.String())
+	err := m.DB.QueryRowContext(ctx, stmt, r.SubredditId, r.UserId, r.Role).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
 	return su, err
 }
 
-// CreateSubredditUser inserts subreddit users relation when someone creates a new subreddit
-/*func (m *postgresDBRepo) CreateSubredditUser(userId string, subredditId string) (models.SubredditUser, error) {
-	var su models.SubredditUser
-	stmt := `INSERT INTO subreddits_users(subreddit_id, user_id, role) VALUES($1, $2, 'admin') RETURNING *`
-	err := m.DB.QueryRow(stmt)
-}*/
-
 // UpdateSubredditUser updates subreddituser information
-func (m *postgresDBRepo) UpdateSubredditUser(id string, r models.SubredditUser) (models.SubredditUser, error) {
+func (m *postgresDBRepo) UpdateSubredditUser(subredditUserId string, r models.SubredditUser) (models.SubredditUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var su models.SubredditUser
 	stmt := `UPDATE subreddits_users SET `
 	if r.Role != "" {
-		stmt += `role = '` + r.Role + `', `
+		stmt += `role = $1, `
 	} else {
 		return su, errors.New("there is no role")
 	}
-	stmt += `updated_at = NOW() WHERE subreddit_user_id = '` + id + `' RETURNING *`
-	err := m.DB.QueryRow(stmt).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
+	stmt += `updated_at = NOW() WHERE subreddit_user_id = $2 RETURNING *`
+	uid, _ := uuid.FromString(subredditUserId)
+	err := m.DB.QueryRowContext(ctx, stmt, r.Role, uid).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
 	return su, err
 }
 
 // DeleteSubredditUser deletes the subreddituser relation
-func (m *postgresDBRepo) DeleteSubredditUser(id string) (models.SubredditUser, error) {
+func (m *postgresDBRepo) DeleteSubredditUser(subredditUserId string) (models.SubredditUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	var su models.SubredditUser
-	stmt := `DELETE FROM subreddits_users  WHERE subreddit_user_id = '` + id + `' RETURNING *`
-	err := m.DB.QueryRow(stmt).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
-	if err != nil {
-		return su, err
-	}
-	su.User, err = m.GetUserById(su.UserId.String())
-	if err != nil {
-		return su, err
-	}
-	su.Subreddit, err = m.GetSubredditById(su.SubredditId.String())
+	stmt := `DELETE FROM subreddits_users  WHERE subreddit_user_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(subredditUserId)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&su.SubredditUserId, &su.SubredditId, &su.UserId, &su.Role, &su.CreatedAt, &su.UpdatedAt)
 	return su, err
 }

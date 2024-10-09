@@ -16,7 +16,7 @@ func (m *Repository) GetTopicsUsersList(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	for i := 0; i < len(topicsUsers); i++ {
-		error = m.GetTopicsAndUsers(&topicsUsers[i])
+		error = getTopicsAndUsersByTopicUser(&topicsUsers[i])
 		if error != nil {
 			helpers.ServerError(w, error)
 			return
@@ -33,7 +33,7 @@ func (m *Repository) GetTopicUserById(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
-	error = m.GetTopicsAndUsers(&topicUser)
+	error = getTopicsAndUsersByTopicUser(&topicUser)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
@@ -55,6 +55,7 @@ func (m *Repository) GetTopicsByUser(w http.ResponseWriter, r *http.Request) {
 			helpers.ServerError(w, error)
 			return
 		}
+		topics[i].User.Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
@@ -66,6 +67,9 @@ func (m *Repository) GetUsersByTopic(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
+	}
+	for i := 0; i < len(users); i++ {
+		users[i].Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
@@ -84,7 +88,7 @@ func (m *Repository) PostTopicUser(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
-	error = m.GetTopicsAndUsers(&newTopicUser)
+	error = getTopicsAndUsersByTopicUser(&newTopicUser)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
@@ -101,12 +105,7 @@ func (m *Repository) DeleteTopicUser(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
-	error = m.GetTopicsAndUsers(&TopicUser)
-	if error != nil {
-		helpers.ServerError(w, error)
-		return
-	}
-	error = m.GetTopicsAndUsers(&TopicUser)
+	error = getTopicsAndUsersByTopicUser(&TopicUser)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
@@ -116,16 +115,18 @@ func (m *Repository) DeleteTopicUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(TopicUser)
 }
 
-func (m *Repository) GetTopicsAndUsers(t *models.TopicUser) error {
+func getTopicsAndUsersByTopicUser(t *models.TopicUser) error {
 	var error error
-	t.User, error = m.DB.GetUserById(t.UserId.String())
+	t.User, error = Repo.DB.GetUserById(t.UserId.String())
 	if error != nil {
 		return error
 	}
-	t.Topic, error = m.DB.GetTopicById(t.TopicId.String())
+	t.User.Password = "restricted"
+	t.Topic, error = Repo.DB.GetTopicById(t.TopicId.String())
 	if error != nil {
 		return error
 	}
-	t.Topic.User, error = m.DB.GetUserById(t.Topic.UserId.String())
+	t.Topic.User, error = Repo.DB.GetUserById(t.Topic.UserId.String())
+	t.Topic.User.Password = "restricted"
 	return error
 }

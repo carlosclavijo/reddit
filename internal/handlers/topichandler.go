@@ -21,6 +21,7 @@ func (m *Repository) GetTopicsList(w http.ResponseWriter, r *http.Request) {
 			helpers.ServerError(w, error)
 			return
 		}
+		topics[i].User.Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
@@ -38,6 +39,7 @@ func (m *Repository) GetTopicById(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	topic.User.Password = "restricted"
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topic)
 }
@@ -55,6 +57,7 @@ func (m *Repository) GetSubtopics(w http.ResponseWriter, r *http.Request) {
 			helpers.ServerError(w, error)
 			return
 		}
+		topics[i].User.Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
@@ -72,6 +75,26 @@ func (m *Repository) GetParentsTopicsList(w http.ResponseWriter, r *http.Request
 			helpers.ServerError(w, error)
 			return
 		}
+		topics[i].User.Password = "restricted"
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(topics)
+}
+
+func (m *Repository) GetTopicsByCreatorId(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[3]
+	topics, error := m.DB.GetTopicsByCreatorId(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	for i := 0; i < len(topics); i++ {
+		topics[i].User, error = m.DB.GetUserById(topics[i].UserId.String())
+		if error != nil {
+			helpers.ServerError(w, error)
+			return
+		}
+		topics[i].User.Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
@@ -104,6 +127,7 @@ func (m *Repository) PostTopic(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	newTopic.User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "topic", Topic)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newTopic)
@@ -126,6 +150,7 @@ func (m *Repository) PutTopic(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
+	newTopic.User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newTopic)
@@ -143,6 +168,7 @@ func (m *Repository) DeleteTopic(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	Topic.User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(Topic)

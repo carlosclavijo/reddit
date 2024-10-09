@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -15,6 +14,13 @@ func (m *Repository) GetSubredditsUsersList(w http.ResponseWriter, r *http.Reque
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
+	for i := 0; i < len(subredditsusers); i++ {
+		error = getSubredditsAndUsersBySubredditUser(&subredditsusers[i])
+		if error != nil {
+			helpers.ServerError(w, error)
+			return
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subredditsusers)
 }
@@ -24,6 +30,12 @@ func (m *Repository) GetSubredditUserById(w http.ResponseWriter, r *http.Request
 	subreddit, error := m.DB.GetSubredditUserById(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	error = getSubredditsAndUsersBySubredditUser(&subreddit)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subreddit)
@@ -34,6 +46,10 @@ func (m *Repository) GetSubredditMembers(w http.ResponseWriter, r *http.Request)
 	users, error := m.DB.GetSubredditMembers(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	for i := 0; i < len(users); i++ {
+		users[i].Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
@@ -62,7 +78,12 @@ func (m *Repository) PostSubredditUser(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
-	m.App.Session.Put(r.Context(), "subreddituser", SubredditUser)
+	error = getSubredditsAndUsersBySubredditUser(&newSubredditUser)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	//m.App.Session.Put(r.Context(), "subreddituser", SubredditUser)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newSubredditUser)
 }
@@ -77,7 +98,6 @@ func (m *Repository) PutSubredditUser(w http.ResponseWriter, r *http.Request) {
 	}
 	newSubredditUser, error := m.DB.UpdateSubredditUser(value, SubredditUser)
 	if error != nil {
-		log.Println(error)
 		helpers.ServerError(w, error)
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
@@ -91,7 +111,28 @@ func (m *Repository) DeleteSubredditUser(w http.ResponseWriter, r *http.Request)
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
+	error = getSubredditsAndUsersBySubredditUser(&SubredditUser)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(SubredditUser)
+}
+
+func getSubredditsAndUsersBySubredditUser(su *models.SubredditUser) error {
+	var error error
+	su.User, error = Repo.DB.GetUserById(su.UserId.String())
+	if error != nil {
+		return error
+	}
+	su.User.Password = "restricted"
+	su.Subreddit, error = Repo.DB.GetSubredditById(su.SubredditId.String())
+	if error != nil {
+		return error
+	}
+	su.Subreddit.User, error = Repo.DB.GetUserById(su.Subreddit.CreatedBy.String())
+	su.Subreddit.User.Password = "restricted"
+	return error
 }

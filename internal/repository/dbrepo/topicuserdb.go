@@ -30,24 +30,23 @@ func (m *postgresDBRepo) GetTopicsUsers() ([]models.TopicUser, error) {
 }
 
 // GetTopicById gets the topic with their uuid
-func (m *postgresDBRepo) GetTopicUsersById(id string) (models.TopicUser, error) {
+func (m *postgresDBRepo) GetTopicUsersById(topicUserId string) (models.TopicUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var tu models.TopicUser
 	stmt := `SELECT * FROM topics_users WHERE topic_user_id = $1`
-	uid, _ := uuid.FromString(id)
+	uid, _ := uuid.FromString(topicUserId)
 	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&tu.TopicUserId, &tu.TopicId, &tu.UserId, &tu.CreatedAt, &tu.UpdatedAt)
 	return tu, err
 }
 
 // GetTopicsByUserId gets the topics with user_id in common
-func (m *postgresDBRepo) GetTopicsByUserId(id string) ([]models.Topic, error) {
+func (m *postgresDBRepo) GetTopicsByUserId(userId string) ([]models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var topics []models.Topic
-	stmt := `SELECT T.* FROM topics T JOIN topics_users TU ON T.topic_id = TU.topic_id JOIN users U ON U.user_id = TU.user_id
-		WHERE TU.user_id = $1`
-	uid, _ := uuid.FromString(id)
+	stmt := `SELECT T.* FROM topics T JOIN topics_users TU ON T.topic_id = TU.topic_id JOIN users U ON U.user_id = TU.user_id WHERE TU.user_id = $1`
+	uid, _ := uuid.FromString(userId)
 	rows, err := m.DB.QueryContext(ctx, stmt, uid)
 	if err != nil {
 		return topics, err
@@ -64,13 +63,12 @@ func (m *postgresDBRepo) GetTopicsByUserId(id string) ([]models.Topic, error) {
 }
 
 // GetUsersByTopicId gets all users with topic_id in common
-func (m *postgresDBRepo) GetUsersByTopicId(id string) ([]models.User, error) {
+func (m *postgresDBRepo) GetUsersByTopicId(topicId string) ([]models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var users []models.User
-	stmt := `SELECT U.* FROM users U JOIN topics_users TU ON U.user_id = TU.user_id JOIN topics T ON T.topic_id = TU.topic_id
-		WHERE TU.topic_id = $1`
-	uid, _ := uuid.FromString(id)
+	stmt := `SELECT U.* FROM users U JOIN topics_users TU ON U.user_id = TU.user_id JOIN topics T ON T.topic_id = TU.topic_id WHERE TU.topic_id = $1`
+	uid, _ := uuid.FromString(topicId)
 	rows, err := m.DB.QueryContext(ctx, stmt, uid)
 	if err != nil {
 		return users, err
@@ -97,12 +95,12 @@ func (m *postgresDBRepo) InsertTopicUser(r models.TopicUser) (models.TopicUser, 
 }
 
 // DeleteTopicUser deletes the topicusers relation from the database
-func (m *postgresDBRepo) DeleteTopicUser(id string) (models.TopicUser, error) {
+func (m *postgresDBRepo) DeleteTopicUser(topicUserId string) (models.TopicUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var tu models.TopicUser
 	stmt := `DELETE FROM topics_users  WHERE topic_user_id = $1 RETURNING *`
-	uid, _ := uuid.FromString(id)
+	uid, _ := uuid.FromString(topicUserId)
 	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&tu.TopicUserId, &tu.TopicId, &tu.UserId, &tu.CreatedAt, &tu.UpdatedAt)
 	return tu, err
 }

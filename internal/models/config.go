@@ -10,7 +10,7 @@ import (
 type Config struct {
 	ConfigId       uuid.UUID
 	SubredditId    uuid.UUID
-	AdminConfig    uuid.UUID
+	AdminId        uuid.UUID
 	IsAvailable    bool
 	IsLocked       bool
 	TextAvailable  bool

@@ -13,4 +13,6 @@ type SubredditTopic struct {
 	TopicId          uuid.UUID
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
+	Subreddit        Subreddit
+	Topic            Topic
 }

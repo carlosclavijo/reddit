@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -14,6 +15,9 @@ func (m *Repository) GetUsersList(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
+	}
+	for i := 0; i < len(users); i++ {
+		users[i].Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	//w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -29,8 +33,22 @@ func (m *Repository) GetUserById(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	user.Password = "restricted"
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
+}
+
+func (m *Repository) GetUsersAdminList(w http.ResponseWriter, r *http.Request) {
+	users, error := m.DB.GetUsersAdmins()
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	for i := 0; i < len(users); i++ {
+		users[i].Password = "restricted"
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
 }
 
 func (m *Repository) PostUser(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +62,7 @@ func (m *Repository) PostUser(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		helpers.ServerError(w, error)
 	}
+	newUser.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newUser)
@@ -54,14 +73,17 @@ func (m *Repository) PutUser(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[2]
 	err := json.NewDecoder(r.Body).Decode(&User)
 	if err != nil {
+		log.Println(err)
 		helpers.ServerError(w, err)
 		return
 	}
 	newUser, error := m.DB.UpdateUser(value, User)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
 		return
 	}
+	newUser.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newUser)
@@ -74,6 +96,7 @@ func (m *Repository) PatchPostKarma(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(User)
@@ -86,6 +109,7 @@ func (m *Repository) PatchCommentKarma(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(User)
@@ -95,9 +119,11 @@ func (m *Repository) PatchAdmin(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[3]
 	User, error := m.DB.AdminUser(value)
 	if error != nil {
+		log.Println(error)
 		helpers.ServerError(w, error)
 		return
 	}
+	User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(User)
@@ -110,6 +136,7 @@ func (m *Repository) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(User)

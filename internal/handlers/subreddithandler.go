@@ -21,6 +21,7 @@ func (m *Repository) GetSubredditsList(w http.ResponseWriter, r *http.Request) {
 			helpers.ServerError(w, error)
 			return
 		}
+		subreddits[i].User.Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subreddits)
@@ -38,6 +39,7 @@ func (m *Repository) GetSubredditById(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	subreddit.User.Password = "restricted"
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subreddit)
 }
@@ -55,6 +57,7 @@ func (m *Repository) GetSubredditByUserId(w http.ResponseWriter, r *http.Request
 			helpers.ServerError(w, error)
 			return
 		}
+		subreddits[i].User.Password = "restricted"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subreddits)
@@ -78,6 +81,7 @@ func (m *Repository) PostSubeddit(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	newSubreddit.User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "subreddit", Subreddit)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newSubreddit)
@@ -101,6 +105,7 @@ func (m *Repository) PutSubreddit(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	newSubreddit.User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newSubreddit)
@@ -118,6 +123,7 @@ func (m *Repository) DeleteSubreddit(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, error)
 		return
 	}
+	Subreddit.User.Password = "restricted"
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(Subreddit)
