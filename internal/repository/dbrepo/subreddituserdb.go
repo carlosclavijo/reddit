@@ -9,7 +9,6 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// GetSubredditsUsers get the list of all subreddit_users relations
 func (m *postgresDBRepo) GetSubredditsUsers() ([]models.SubredditUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -30,7 +29,6 @@ func (m *postgresDBRepo) GetSubredditsUsers() ([]models.SubredditUser, error) {
 	return SubredditUsers, err
 }
 
-// GetSubredditById gets the subreddit with their uuid
 func (m *postgresDBRepo) GetSubredditUserById(subredditUserId string) (models.SubredditUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -41,7 +39,6 @@ func (m *postgresDBRepo) GetSubredditUserById(subredditUserId string) (models.Su
 	return su, err
 }
 
-// GetSubredditMembers returns all members of a subreddit
 func (m *postgresDBRepo) GetSubredditMembers(subredditUserId string) ([]models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -84,7 +81,6 @@ func (m *postgresDBRepo) GetSubredditMembersByRole(subredditUserId string, role 
 	return users, err
 }
 
-// InsertSubredditUser inserts subreddit users into the database
 func (m *postgresDBRepo) InsertSubredditUser(r models.SubredditUser) (models.SubredditUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -94,7 +90,6 @@ func (m *postgresDBRepo) InsertSubredditUser(r models.SubredditUser) (models.Sub
 	return su, err
 }
 
-// UpdateSubredditUser updates subreddituser information
 func (m *postgresDBRepo) UpdateSubredditUser(subredditUserId string, r models.SubredditUser) (models.SubredditUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -111,7 +106,6 @@ func (m *postgresDBRepo) UpdateSubredditUser(subredditUserId string, r models.Su
 	return su, err
 }
 
-// DeleteSubredditUser deletes the subreddituser relation
 func (m *postgresDBRepo) DeleteSubredditUser(subredditUserId string) (models.SubredditUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

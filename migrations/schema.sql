@@ -496,6 +496,13 @@ ALTER TABLE ONLY public.videos
 
 
 --
+-- Name: configs_subreddit_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX configs_subreddit_id_idx ON public.configs USING btree (subreddit_id);
+
+
+--
 -- Name: links_post_id_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 

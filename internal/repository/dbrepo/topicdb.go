@@ -9,7 +9,6 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// GetTopics get the list of all topics from the database
 func (m *postgresDBRepo) GetTopics() ([]models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -30,7 +29,6 @@ func (m *postgresDBRepo) GetTopics() ([]models.Topic, error) {
 	return topics, err
 }
 
-// GetTopicById gets the topic with their uuid
 func (m *postgresDBRepo) GetTopicById(topicId string) (models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -44,7 +42,6 @@ func (m *postgresDBRepo) GetTopicById(topicId string) (models.Topic, error) {
 	return t, err
 }
 
-// GetSubTopics get the list of all subtopics from the database
 func (m *postgresDBRepo) GetSubTopics(topicId string) ([]models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -66,7 +63,6 @@ func (m *postgresDBRepo) GetSubTopics(topicId string) ([]models.Topic, error) {
 	return topics, err
 }
 
-// GetParentsTopics gets the list of all topics without parent topics
 func (m *postgresDBRepo) GetParentsTopics() ([]models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -87,7 +83,6 @@ func (m *postgresDBRepo) GetParentsTopics() ([]models.Topic, error) {
 	return topics, err
 }
 
-// GetTopicsByCreatorId Get all Topics created by an User
 func (m *postgresDBRepo) GetTopicsByCreatorId(userId string) ([]models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -109,7 +104,6 @@ func (m *postgresDBRepo) GetTopicsByCreatorId(userId string) ([]models.Topic, er
 	return topics, err
 }
 
-// InsertTopic inserts topics into the database
 func (m *postgresDBRepo) InsertTopic(r models.Topic) (models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -125,7 +119,6 @@ func (m *postgresDBRepo) InsertTopic(r models.Topic) (models.Topic, error) {
 	return t, err
 }
 
-// UpdateTopic updates topic information
 func (m *postgresDBRepo) UpdateTopic(topicId string, r models.Topic) (models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -147,7 +140,6 @@ func (m *postgresDBRepo) UpdateTopic(topicId string, r models.Topic) (models.Top
 	return t, err
 }
 
-// DeleteSubreddit deleters the subreddit from the database
 func (m *postgresDBRepo) DeleteTopic(topicId string) (models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

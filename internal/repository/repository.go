@@ -51,7 +51,12 @@ type DatabaseRepo interface {
 	DeleteSubredditUser(subredditUserId string) (models.SubredditUser, error)
 
 	GetSubredditsTopics() ([]models.SubredditTopic, error)
+	GetSubredditsTopicById(subredditTopicId string) (models.SubredditTopic, error)
+	GetSubredditsByTopicId(topicId string) ([]models.Subreddit, error)
+	GetTopicsBySubredditId(subredditId string) ([]models.Topic, error)
 	InsertSubredditTopic(res models.SubredditTopic) (models.SubredditTopic, error)
+	DeleteSubredditTopic(subredditTopicId string) (models.SubredditTopic, error)
+
 	//InsertTag(res models.Tag) (models.Tag, error)
 	/*InsertPost(res models.Post) (models.Post, error)
 	InsertPostTag(res models.PostTag) (models.PostTag, error)

@@ -66,7 +66,11 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Delete("/subredditusers/{subredditUserId}", handlers.Repo.DeleteSubredditUser)
 
 	mux.Get("/subreddittopics", handlers.Repo.GetSubredditsTopicsList)
+	mux.Get("/subreddittopics/{subredditTopicId}", handlers.Repo.GetSubredditTopicById)
+	mux.Get("/subreddittopics/subreddits/{topicId}", handlers.Repo.GetSubredditsByTopic)
+	mux.Get("/subreddittopics/topics/{subredditId}", handlers.Repo.GetTopicsBySubreddit)
 	mux.Post("/subreddittopics", handlers.Repo.PostSubedditTopic)
+	mux.Delete("/subreddittopics/{subredditTopicId}", handlers.Repo.DeleteSubredditTopic)
 
 	mux.Post("/tags", handlers.Repo.PostTag)
 	mux.Post("/posts", handlers.Repo.PostPost)

@@ -1,3 +1,5 @@
+add_index("configs", "subreddit_id",  {"unique": true})
+
 sql("alter table only configs alter column config_id set default gen_random_uuid()")
 sql("alter table only configs alter column created_at set default NOW()")
 sql("alter table only configs alter column updated_at set default NOW()")

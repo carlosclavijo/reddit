@@ -9,7 +9,6 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// GetUsers get the list of all users from the database
 func (m *postgresDBRepo) GetUsers() ([]models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -30,7 +29,6 @@ func (m *postgresDBRepo) GetUsers() ([]models.User, error) {
 	return users, err
 }
 
-// GetUsersAdmins gets the list of all admins
 func (m *postgresDBRepo) GetUsersAdmins() ([]models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -51,19 +49,17 @@ func (m *postgresDBRepo) GetUsersAdmins() ([]models.User, error) {
 	return users, err
 }
 
-// GetUser gets user by id from the database
 func (m *postgresDBRepo) GetUserById(userId string) (models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var u models.User
-	stmt := `SELECT * FROM users WHERE user_id = $1`
+	stmt := `SELECT * FROM users WHERE user_id = 
+	$1`
 	uid, _ := uuid.FromString(userId)
 	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&u.UserId, &u.Username, &u.Email, &u.Password, &u.PostKarma, &u.CommentKarma, &u.AccountAvailable, &u.ProfilePic, &u.Admin, &u.CreatedAt, &u.UpdatedAt)
 	return u, err
-
 }
 
-// InsertUser inserts users into the database
 func (m *postgresDBRepo) InsertUser(r models.User) (models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -87,7 +83,6 @@ func (m *postgresDBRepo) InsertUser(r models.User) (models.User, error) {
 	return u, err
 }
 
-// UpdateUser updates user information
 func (m *postgresDBRepo) UpdateUser(userId string, r models.User) (models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

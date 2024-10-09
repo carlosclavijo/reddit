@@ -8,7 +8,6 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// GetTopicUsers get the list of all topicsusers from the database
 func (m *postgresDBRepo) GetTopicsUsers() ([]models.TopicUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -29,7 +28,6 @@ func (m *postgresDBRepo) GetTopicsUsers() ([]models.TopicUser, error) {
 	return topicsusers, err
 }
 
-// GetTopicById gets the topic with their uuid
 func (m *postgresDBRepo) GetTopicUsersById(topicUserId string) (models.TopicUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -40,7 +38,6 @@ func (m *postgresDBRepo) GetTopicUsersById(topicUserId string) (models.TopicUser
 	return tu, err
 }
 
-// GetTopicsByUserId gets the topics with user_id in common
 func (m *postgresDBRepo) GetTopicsByUserId(userId string) ([]models.Topic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -62,7 +59,6 @@ func (m *postgresDBRepo) GetTopicsByUserId(userId string) ([]models.Topic, error
 	return topics, err
 }
 
-// GetUsersByTopicId gets all users with topic_id in common
 func (m *postgresDBRepo) GetUsersByTopicId(topicId string) ([]models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -84,7 +80,6 @@ func (m *postgresDBRepo) GetUsersByTopicId(topicId string) ([]models.User, error
 	return users, err
 }
 
-// InsertTopic inserts topics into the database
 func (m *postgresDBRepo) InsertTopicUser(r models.TopicUser) (models.TopicUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -94,7 +89,6 @@ func (m *postgresDBRepo) InsertTopicUser(r models.TopicUser) (models.TopicUser, 
 	return tu, err
 }
 
-// DeleteTopicUser deletes the topicusers relation from the database
 func (m *postgresDBRepo) DeleteTopicUser(topicUserId string) (models.TopicUser, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

@@ -9,7 +9,6 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// GetReddits get the list of all reddits from the database
 func (m *postgresDBRepo) GetSubreddits() ([]models.Subreddit, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -30,7 +29,6 @@ func (m *postgresDBRepo) GetSubreddits() ([]models.Subreddit, error) {
 	return subreddits, err
 }
 
-// GetSubredditById gets the subreddit with their uuid
 func (m *postgresDBRepo) GetSubredditById(subredditId string) (models.Subreddit, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -41,7 +39,6 @@ func (m *postgresDBRepo) GetSubredditById(subredditId string) (models.Subreddit,
 	return s, err
 }
 
-// GetSubredditByUserId gets all the subreddits created by userId
 func (m *postgresDBRepo) GetSubredditByUserId(userId string) ([]models.Subreddit, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -63,7 +60,6 @@ func (m *postgresDBRepo) GetSubredditByUserId(userId string) ([]models.Subreddit
 	return subreddits, err
 }
 
-// InsertSubreddit inserts subreddits into the database
 func (m *postgresDBRepo) InsertSubreddit(r models.Subreddit) (models.Subreddit, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -87,7 +83,6 @@ func (m *postgresDBRepo) InsertSubreddit(r models.Subreddit) (models.Subreddit, 
 	return s, err
 }
 
-// UpdateSubreddit updates subreddit information
 func (m *postgresDBRepo) UpdateSubreddit(subredditId string, r models.Subreddit) (models.Subreddit, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -128,7 +123,6 @@ func (m *postgresDBRepo) UpdateSubreddit(subredditId string, r models.Subreddit)
 	return s, err
 }
 
-// DeleteSubreddit deleters the subreddit from the database
 func (m *postgresDBRepo) DeleteSubreddit(subredditId string) (models.Subreddit, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
