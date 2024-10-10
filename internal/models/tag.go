@@ -16,4 +16,6 @@ type Tag struct {
 	IsMature    bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Subreddit   Subreddit
+	Admin       User
 }

@@ -13,6 +13,7 @@ func (m *Repository) GetSubredditsUsersList(w http.ResponseWriter, r *http.Reque
 	subredditsusers, error := m.DB.GetSubredditsUsers()
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	for i := 0; i < len(subredditsusers); i++ {
 		error = getSubredditsAndUsersBySubredditUser(&subredditsusers[i])
@@ -61,6 +62,7 @@ func (m *Repository) GetSubredditMembersByRole(w http.ResponseWriter, r *http.Re
 	users, error := m.DB.GetSubredditMembersByRole(value, role)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
@@ -77,6 +79,7 @@ func (m *Repository) PostSubredditUser(w http.ResponseWriter, r *http.Request) {
 	newSubredditUser, error := m.DB.InsertSubredditUser(SubredditUser)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	error = getSubredditsAndUsersBySubredditUser(&newSubredditUser)
 	if error != nil {
@@ -99,6 +102,12 @@ func (m *Repository) PutSubredditUser(w http.ResponseWriter, r *http.Request) {
 	newSubredditUser, error := m.DB.UpdateSubredditUser(value, SubredditUser)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
+	}
+	error = getSubredditsAndUsersBySubredditUser(&newSubredditUser)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
 	}
 	//m.App.Session.Put(r.Context(), "user", User)
 	w.Header().Set("Content-Type", "application/json")
@@ -110,6 +119,7 @@ func (m *Repository) DeleteSubredditUser(w http.ResponseWriter, r *http.Request)
 	SubredditUser, error := m.DB.DeleteSubredditUser(value)
 	if error != nil {
 		helpers.ServerError(w, error)
+		return
 	}
 	error = getSubredditsAndUsersBySubredditUser(&SubredditUser)
 	if error != nil {

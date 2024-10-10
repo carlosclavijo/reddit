@@ -23,8 +23,10 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/users/{userId}", handlers.Repo.GetUserById)
 	mux.Post("/users", handlers.Repo.PostUser)
 	mux.Put("/users/{userId}", handlers.Repo.PutUser)
-	mux.Patch("/users/post/{userId}", handlers.Repo.PatchPostKarma)
-	mux.Patch("/users/comment/{userId}", handlers.Repo.PatchCommentKarma)
+	mux.Patch("/users/post/plus/{userId}", handlers.Repo.PatchPlusPostKarma)
+	mux.Patch("/users/post/less/{userId}", handlers.Repo.PatchLessPostKarma)
+	mux.Patch("/users/comment/plus/{userId}", handlers.Repo.PatchPlusCommentKarma)
+	mux.Patch("/users/comment/less/{userId}", handlers.Repo.PatchLessCommentKarma)
 	mux.Patch("/users/admin/{userId}", handlers.Repo.PatchAdmin)
 	mux.Delete("/users/{userId}", handlers.Repo.DeleteUser)
 
@@ -72,8 +74,19 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Post("/subreddittopics", handlers.Repo.PostSubedditTopic)
 	mux.Delete("/subreddittopics/{subredditTopicId}", handlers.Repo.DeleteSubredditTopic)
 
+	mux.Get("/tags", handlers.Repo.GetTagsList)
+	mux.Get("/tags/{tagId}", handlers.Repo.GetTagById)
+	mux.Get("/tags/subreddits/{subredditId}", handlers.Repo.GetTagsBySubreddit)
 	mux.Post("/tags", handlers.Repo.PostTag)
+	mux.Put("/tags/{tagId}", handlers.Repo.PutTag)
+	mux.Delete("/tags/{tagId}", handlers.Repo.DeleteTag)
+
+	mux.Get("/posts", handlers.Repo.GetPostsList)
+	mux.Get("/posts/{postId}", handlers.Repo.GetPostById)
+	mux.Get("/posts/user/{userId}", handlers.Repo.GetPostsByUserId)
 	mux.Post("/posts", handlers.Repo.PostPost)
+	mux.Put("/posts/{postId}", handlers.Repo.PutPost)
+
 	mux.Post("/posttags", handlers.Repo.PostPostTag)
 	mux.Post("/images", handlers.Repo.PostImage)
 	mux.Post("/videos", handlers.Repo.PostVideo)

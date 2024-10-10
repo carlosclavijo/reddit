@@ -20,4 +20,6 @@ type Post struct {
 	Comments    int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Subreddit   Subreddit
+	User        User
 }

@@ -53,8 +53,7 @@ func (m *postgresDBRepo) GetUserById(userId string) (models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var u models.User
-	stmt := `SELECT * FROM users WHERE user_id = 
-	$1`
+	stmt := `SELECT * FROM users WHERE user_id = $1`
 	uid, _ := uuid.FromString(userId)
 	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&u.UserId, &u.Username, &u.Email, &u.Password, &u.PostKarma, &u.CommentKarma, &u.AccountAvailable, &u.ProfilePic, &u.Admin, &u.CreatedAt, &u.UpdatedAt)
 	return u, err
@@ -101,22 +100,22 @@ func (m *postgresDBRepo) UpdateUser(userId string, r models.User) (models.User, 
 	if r.Password != "" {
 		stmt += `password = '` + r.Password + `', `
 	} else {
-		stmt += `password = password`
+		stmt += `password = password, `
 	}
 	if r.ProfilePic.String != "" {
-		stmt += `profile_pic = '` + r.ProfilePic.String + `' `
+		stmt += `profile_pic = '` + r.ProfilePic.String + `', `
 	} else if !r.ProfilePic.Valid {
-		stmt += `profile_pic = NULL`
+		stmt += `profile_pic = NULL, `
 	} else {
-		stmt += `profile_pic = profile_pic`
+		stmt += `profile_pic = profile_pic, `
 	}
-	stmt += `, admin = ` + strconv.FormatBool(r.Admin) + `, updated_at = NOW() WHERE user_id = $1 RETURNING *`
+	stmt += `admin = ` + strconv.FormatBool(r.Admin) + `, updated_at = NOW() WHERE user_id = $1 RETURNING *`
 	uid, _ := uuid.FromString(userId)
 	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&u.UserId, &u.Username, &u.Email, &u.Password, &u.PostKarma, &u.CommentKarma, &u.AccountAvailable, &u.ProfilePic, &u.Admin, &u.CreatedAt, &u.UpdatedAt)
 	return u, err
 }
 
-func (m *postgresDBRepo) AddUserPostKarma(userId string) (models.User, error) {
+func (m *postgresDBRepo) PlusUserPostKarma(userId string) (models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var u models.User
@@ -126,11 +125,31 @@ func (m *postgresDBRepo) AddUserPostKarma(userId string) (models.User, error) {
 	return u, err
 }
 
-func (m *postgresDBRepo) AddUserCommentKarma(userId string) (models.User, error) {
+func (m *postgresDBRepo) LessUserPostKarma(userId string) (models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var u models.User
+	stmt := `UPDATE users SET post_karma = post_karma - 1, updated_at = NOW() WHERE user_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(userId)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&u.UserId, &u.Username, &u.Email, &u.Password, &u.PostKarma, &u.CommentKarma, &u.AccountAvailable, &u.ProfilePic, &u.Admin, &u.CreatedAt, &u.UpdatedAt)
+	return u, err
+}
+
+func (m *postgresDBRepo) PlusUserCommentKarma(userId string) (models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var u models.User
 	stmt := `UPDATE users SET comment_karma = comment_karma + 1, updated_at = NOW() WHERE user_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(userId)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&u.UserId, &u.Username, &u.Email, &u.Password, &u.PostKarma, &u.CommentKarma, &u.AccountAvailable, &u.ProfilePic, &u.Admin, &u.CreatedAt, &u.UpdatedAt)
+	return u, err
+}
+
+func (m *postgresDBRepo) LessUserCommentKarma(userId string) (models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var u models.User
+	stmt := `UPDATE users SET comment_karma = comment_karma - 1, updated_at = NOW() WHERE user_id = $1 RETURNING *`
 	uid, _ := uuid.FromString(userId)
 	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&u.UserId, &u.Username, &u.Email, &u.Password, &u.PostKarma, &u.CommentKarma, &u.AccountAvailable, &u.ProfilePic, &u.Admin, &u.CreatedAt, &u.UpdatedAt)
 	return u, err

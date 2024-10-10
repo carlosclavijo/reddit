@@ -89,9 +89,9 @@ func (m *Repository) PutUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newUser)
 }
 
-func (m *Repository) PatchPostKarma(w http.ResponseWriter, r *http.Request) {
-	value := strings.Split(r.URL.Path, "/")[3]
-	User, error := m.DB.AddUserPostKarma(value)
+func (m *Repository) PatchPlusPostKarma(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[4]
+	User, error := m.DB.PlusUserPostKarma(value)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
@@ -102,9 +102,35 @@ func (m *Repository) PatchPostKarma(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(User)
 }
 
-func (m *Repository) PatchCommentKarma(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) PatchLessPostKarma(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[4]
+	User, error := m.DB.LessUserPostKarma(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	User.Password = "restricted"
+	//m.App.Session.Put(r.Context(), "user", User)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(User)
+}
+
+func (m *Repository) PatchPlusCommentKarma(w http.ResponseWriter, r *http.Request) {
 	value := strings.Split(r.URL.Path, "/")[3]
-	User, error := m.DB.AddUserCommentKarma(value)
+	User, error := m.DB.PlusUserCommentKarma(value)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	User.Password = "restricted"
+	//m.App.Session.Put(r.Context(), "user", User)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(User)
+}
+
+func (m *Repository) PatchLessCommentKarma(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[3]
+	User, error := m.DB.LessUserCommentKarma(value)
 	if error != nil {
 		helpers.ServerError(w, error)
 		return
