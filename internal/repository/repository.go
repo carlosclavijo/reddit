@@ -40,7 +40,7 @@ type DatabaseRepo interface {
 
 	GetConfigs() ([]models.Config, error)
 	GetConfigById(configId string) (models.Config, error)
-	InsertConfig(res models.Config) (models.Config, error)
+	InsertConfig(r models.Config) (models.Config, error)
 	UpdateConfig(configId string, r models.Config) (models.Config, error)
 	DeleteConfig(configId string) (models.Config, error)
 
@@ -56,7 +56,7 @@ type DatabaseRepo interface {
 	GetSubredditsTopicById(subredditTopicId string) (models.SubredditTopic, error)
 	GetSubredditsByTopicId(topicId string) ([]models.Subreddit, error)
 	GetTopicsBySubredditId(subredditId string) ([]models.Topic, error)
-	InsertSubredditTopic(res models.SubredditTopic) (models.SubredditTopic, error)
+	InsertSubredditTopic(r models.SubredditTopic) (models.SubredditTopic, error)
 	DeleteSubredditTopic(subredditTopicId string) (models.SubredditTopic, error)
 
 	GetTags() ([]models.Tag, error)
@@ -71,20 +71,25 @@ type DatabaseRepo interface {
 	GetPostsByUserId(userId string) ([]models.Post, error)
 	InsertPost(r models.Post) (models.Post, error)
 	UpdatePost(postId string, r models.Post) (models.Post, error)
-	ChangeNsfw(r models.Post) (models.Post, error)
-	//ChangeNsfw(postId string) (models.Post, error)
-	//DeletePost(postId string) (models.Post, error)
+	ChangeNsfw(postId string, state bool) (models.Post, error)
+	ChangeBrand(postId string, state bool) (models.Post, error)
+	DeletePost(postId string) (models.Post, error)
 
-	/*InsertPost(res models.Post) (models.Post, error)
+	GetPostsTags() ([]models.PostTag, error)
+	GetPostTagById(postTagId string) (models.PostTag, error)
+	GetPostsByTagId(tagId string) ([]models.Post, error)
+	GetTagsByPostId(postId string) ([]models.Tag, error)
 	InsertPostTag(res models.PostTag) (models.PostTag, error)
-	InsertImage(res models.Image) (models.Image, error)
-	InsertVideo(res models.Video) (models.Video, error)
-	InsertLink(res models.Link) (models.Link, error)
-	InsertPoll(res models.Poll) (models.Poll, error)
-	InsertOption(res models.Option) (models.Option, error)
-	InsertOptionUser(res models.OptionUser) (models.OptionUser, error)
-	InsertComment(res models.Comment) (models.Comment, error)
-	InsertCommentVote(res models.CommentVote) (models.CommentVote, error)*/
+	/*
+		InsertPostTag(res models.PostTag) (models.PostTag, error)
+		InsertImage(res models.Image) (models.Image, error)
+		InsertVideo(res models.Video) (models.Video, error)
+		InsertLink(res models.Link) (models.Link, error)
+		InsertPoll(res models.Poll) (models.Poll, error)
+		InsertOption(res models.Option) (models.Option, error)
+		InsertOptionUser(res models.OptionUser) (models.OptionUser, error)
+		InsertComment(res models.Comment) (models.Comment, error)
+		InsertCommentVote(res models.CommentVote) (models.CommentVote, error)*/
 }
 
 //8a1196bb-d0f9-44a5-af43-cd59b186345e

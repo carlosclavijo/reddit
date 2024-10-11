@@ -2,7 +2,7 @@ sql("alter table only topics alter column topic_id set default gen_random_uuid()
 sql("alter table only topics alter column created_at set default NOW()")
 sql("alter table only topics alter column updated_at set default NOW()")
 
-add_index("topics", ["name"],  {"unique": true})
+add_index("topics", "name",  {"unique": true})
 
 add_foreign_key("topics", "user_id", {"users": ["user_id"]}, {
     "on_delete": "cascade",

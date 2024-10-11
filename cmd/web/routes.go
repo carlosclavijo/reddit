@@ -86,8 +86,16 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/posts/user/{userId}", handlers.Repo.GetPostsByUserId)
 	mux.Post("/posts", handlers.Repo.PostPost)
 	mux.Put("/posts/{postId}", handlers.Repo.PutPost)
+	mux.Patch("/posts/nsfw/{postId}", handlers.Repo.PatchPostNsfw)
+	mux.Patch("/posts/brand/{postId}", handlers.Repo.PatchPostBrand)
+	mux.Delete("/posts/{postId}", handlers.Repo.DeletePost)
 
-	mux.Post("/posttags", handlers.Repo.PostPostTag)
+	mux.Get("/poststags", handlers.Repo.GetPostsTags)
+	mux.Get("/poststags/{postTagId}", handlers.Repo.GetPostTagById)
+	mux.Get("/poststags/posts/{tagId}", handlers.Repo.GetPostsByTagId)
+	mux.Get("/poststags/tags/{postId}", handlers.Repo.GetTagsByPostId)
+	mux.Post("/poststags", handlers.Repo.PostPostTag)
+
 	mux.Post("/images", handlers.Repo.PostImage)
 	mux.Post("/videos", handlers.Repo.PostVideo)
 	mux.Post("/links", handlers.Repo.PostLink)

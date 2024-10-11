@@ -1,2 +1,4 @@
+drop_index("posts_tags", "posts_tags_post_id_tag_id_idx")
+
 drop_foreign_key("posts_tags", "posts_tags_posts_post_id_fk", {})
 drop_foreign_key("posts_tags", "posts_tags_tags_tag_id_fk", {})

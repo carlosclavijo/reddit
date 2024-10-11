@@ -2,6 +2,8 @@ sql("alter table only posts_tags alter column post_tag_id set default gen_random
 sql("alter table only posts_tags alter column created_at set default NOW()")
 sql("alter table only posts_tags alter column updated_at set default NOW()")
 
+add_index("posts_tags", ["post_id", "tag_id"],  {"unique": true})
+
 add_foreign_key("posts_tags", "post_id", {"posts": ["post_id"]}, {
     "on_delete": "cascade",
     "on_update": "cascade",

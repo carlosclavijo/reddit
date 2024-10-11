@@ -100,3 +100,45 @@ func (m *postgresDBRepo) UpdatePost(postId string, r models.Post) (models.Post, 
 	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&p.PostId, &p.SubredditId, &p.UserId, &p.Title, &p.Description, &p.Type, &p.Nsfw, &p.Brand, &p.Votes, &p.Comments, &p.CreatedAt, &p.UpdatedAt)
 	return p, err
 }
+
+func (m *postgresDBRepo) ChangeNsfw(postId string, state bool) (models.Post, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var p models.Post
+	stmt := `UPDATE posts SET `
+	if state {
+		stmt += `nsfw = false,`
+	} else {
+		stmt += `nsfw = true,`
+	}
+	stmt += ` updated_at = NOW() WHERE post_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(postId)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&p.PostId, &p.SubredditId, &p.UserId, &p.Title, &p.Description, &p.Type, &p.Nsfw, &p.Brand, &p.Votes, &p.Comments, &p.CreatedAt, &p.UpdatedAt)
+	return p, err
+}
+
+func (m *postgresDBRepo) ChangeBrand(postId string, state bool) (models.Post, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var p models.Post
+	stmt := `UPDATE posts SET `
+	if state {
+		stmt += `brand = false,`
+	} else {
+		stmt += `brand = true,`
+	}
+	stmt += ` updated_at = NOW() WHERE post_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(postId)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&p.PostId, &p.SubredditId, &p.UserId, &p.Title, &p.Description, &p.Type, &p.Nsfw, &p.Brand, &p.Votes, &p.Comments, &p.CreatedAt, &p.UpdatedAt)
+	return p, err
+}
+
+func (m *postgresDBRepo) DeletePost(postId string) (models.Post, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var p models.Post
+	stmt := `DELETE FROM posts WHERE post_id = $1 RETURNING *`
+	uid, _ := uuid.FromString(postId)
+	err := m.DB.QueryRowContext(ctx, stmt, uid).Scan(&p.PostId, &p.SubredditId, &p.UserId, &p.Title, &p.Description, &p.Type, &p.Nsfw, &p.Brand, &p.Votes, &p.Comments, &p.CreatedAt, &p.UpdatedAt)
+	return p, err
+}

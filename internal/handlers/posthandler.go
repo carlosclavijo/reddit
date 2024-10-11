@@ -106,6 +106,66 @@ func (m *Repository) PutPost(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newPost)
 }
 
+func (m *Repository) PatchPostNsfw(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[3]
+	post, err := m.DB.GetPostById(value)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	newPost, error := m.DB.ChangeNsfw(value, post.Nsfw)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	error = getSubredditsAndUsersByPost(&newPost)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newPost)
+}
+
+func (m *Repository) PatchPostBrand(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[3]
+	post, err := m.DB.GetPostById(value)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	newPost, error := m.DB.ChangeBrand(value, post.Brand)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	error = getSubredditsAndUsersByPost(&newPost)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newPost)
+}
+
+func (m *Repository) DeletePost(w http.ResponseWriter, r *http.Request) {
+	value := strings.Split(r.URL.Path, "/")[2]
+	Post, error := m.DB.DeletePost(value)
+	if error != nil {
+
+		helpers.ServerError(w, error)
+		return
+	}
+	error = getSubredditsAndUsersByPost(&Post)
+	if error != nil {
+		helpers.ServerError(w, error)
+		return
+	}
+	//m.App.Session.Put(r.Context(), "user", User)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(Post)
+}
+
 func getSubredditsAndUsersByPost(p *models.Post) error {
 	var error error
 	p.User, error = Repo.DB.GetUserById(p.UserId.String())

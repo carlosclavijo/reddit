@@ -13,4 +13,6 @@ type PostTag struct {
 	TagId     uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	Post      Post
+	Tag       Tag
 }
